@@ -1,0 +1,34 @@
+{
+  "trends": {
+    "keywords": [
+      "【詳細】京都 南丹 遺体は男児と発表 死因不詳 死亡は先月下旬",
+      "米のホルムズ海峡封鎖でイラン反発 次の対面協議めぐる報道も",
+      "米のイラン港湾出入り封鎖後 12時間で3隻が周辺海域出入り",
+      "ツイッターの「＃旦那死ね」　この世の地獄と化していた…",
+      "Xで「日韓百合」トレンドが誕生　百合が大量投下されてしまう…"
+    ],
+    "headlines": [
+      "【詳細】京都 南丹 遺体は男児と発表 死因不詳 死亡は先月下旬",
+      "米のホルムズ海峡封鎖でイラン反発 次の対面協議めぐる報道も",
+      "米のイラン港湾出入り封鎖後 12時間で3隻が周辺海域出入り"
+    ],
+    "genre": "雑学・豆知識",
+    "timestamp": "2026-04-14T23:47:24.349903"
+  },
+  "script": {
+    "title": "ホルムズ海峡封鎖！世界が震えた理由",
+    "scenes_count": 6
+  },
+  "generate": {
+    "scene_assets_count": 6
+  },
+  "edit": {
+    "final_video_path": "C:\\Users\\soray\\Desktop\\auto_short_video\\output\\final_20260414.mp4"
+  },
+  "post": {
+    "dry_run": true,
+    "video_path": "C:\\Users\\soray\\Desktop\\auto_short_video\\output\\final_20260414.mp4"
+  },
+  "elapsed_seconds": 87.035304,
+  "timestamp": "2026-04-14T23:47:21.534520"
+}
