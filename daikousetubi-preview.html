@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="大光設備株式会社 - 水まわりの困った、即解決。地域密着30年の安心。">
+<title>大光設備株式会社 | 水道・リフォーム・住宅設備</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --c-primary:#0066cc;
+  --c-primary-light:#00a8e8;
+  --c-primary-dark:#004a99;
+  --c-gradient:linear-gradient(135deg,#0066cc 0%,#00a8e8 100%);
+  --c-gradient-soft:linear-gradient(135deg,rgba(0,102,204,0.1) 0%,rgba(0,168,232,0.1) 100%);
+  --c-text:#1a2332;
+  --c-text-muted:#5a6778;
+  --c-surface:#ffffff;
+  --c-surface-soft:#f5f9ff;
+  --c-border:rgba(0,102,204,0.08);
+  --c-border-strong:rgba(0,102,204,0.2);
+  --c-shadow:0 4px 20px rgba(0,102,204,0.08);
+  --c-shadow-hover:0 12px 40px rgba(0,102,204,0.18);
+  --c-glow:0 10px 40px rgba(0,102,204,0.25);
+  --radius:16px;
+  --radius-lg:24px;
+  --radius-sm:8px;
+  --header-h:80px;
+  --topbar-h:40px;
+  --container:1200px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;font-family:'Noto Sans JP',sans-serif;
+  font-weight:400;line-height:1.7;color:var(--c-text);
+  background:var(--c-surface);-webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%;display:block}
+a{color:inherit;text-decoration:none;transition:color .2s ease}
+button{font-family:inherit;border:none;background:none;cursor:pointer}
+h1,h2,h3,h4{margin:0;line-height:1.3;font-weight:700;letter-spacing:-0.01em}
+p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+
+.container{max-width:var(--container);margin:0 auto;padding:0 24px}
+
+/* === スクロール進捗バー === */
+.scroll-progress{
+  position:fixed;top:0;left:0;height:3px;width:0;
+  background:var(--c-gradient);z-index:9999;
+  transition:width .1s ease;
+}
+
+/* === ボタン === */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 28px;border-radius:999px;font-weight:700;
+  font-size:15px;transition:all .3s cubic-bezier(.4,0,.2,1);
+  white-space:nowrap;cursor:pointer;
+}
+.btn--primary{
+  background:var(--c-gradient);color:#fff;
+  box-shadow:var(--c-shadow);
+}
+.btn--primary:hover{transform:translateY(-2px);box-shadow:var(--c-glow)}
+.btn--outline{
+  background:#fff;color:var(--c-primary);
+  border:2px solid var(--c-primary);
+}
+.btn--outline:hover{background:var(--c-primary);color:#fff;transform:translateY(-2px)}
+.btn--lg{padding:18px 36px;font-size:16px}
+.btn .arrow{transition:transform .3s ease}
+.btn:hover .arrow{transform:translateX(4px)}
+
+/* === ヘッダー === */
+.topbar{
+  background:var(--c-text);color:#fff;font-size:13px;
+  height:var(--topbar-h);display:flex;align-items:center;
+}
+.topbar__inner{
+  display:flex;justify-content:space-between;align-items:center;
+  width:100%;max-width:var(--container);margin:0 auto;padding:0 24px;
+  gap:16px;flex-wrap:wrap;
+}
+.topbar__item{display:flex;align-items:center;gap:6px;opacity:.9}
+.topbar__item svg{width:14px;height:14px}
+
+.site-header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--c-border);
+  transition:all .3s ease;
+}
+.site-header.is-scrolled{
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 2px 20px rgba(0,0,0,0.05);
+}
+.header-inner{
+  height:var(--header-h);display:flex;align-items:center;
+  justify-content:space-between;gap:24px;
+}
+.site-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px}
+.site-logo__mark{
+  width:42px;height:42px;border-radius:12px;
+  background:var(--c-gradient);color:#fff;
+  display:grid;place-items:center;box-shadow:var(--c-shadow);
+}
+.site-logo__mark svg{width:22px;height:22px}
+.site-logo__text{line-height:1.1}
+.site-logo__sub{font-size:11px;font-weight:500;color:var(--c-text-muted);letter-spacing:.1em}
+
+.nav-menu{display:flex;align-items:center;gap:4px}
+.nav-menu__link{
+  padding:10px 14px;border-radius:8px;font-weight:500;font-size:14px;
+  transition:all .2s ease;position:relative;
+}
+.nav-menu__link:hover{color:var(--c-primary);background:var(--c-surface-soft)}
+.nav-menu__link--cta{
+  background:var(--c-gradient);color:#fff !important;
+  padding:10px 20px;border-radius:999px;margin-left:8px;
+  box-shadow:var(--c-shadow);
+}
+.nav-menu__link--cta:hover{transform:translateY(-2px);box-shadow:var(--c-glow)}
+
+.hamburger{display:none;width:44px;height:44px;position:relative}
+.hamburger span{
+  position:absolute;left:10px;right:10px;height:2px;
+  background:var(--c-text);transition:all .3s ease;
+}
+.hamburger span:nth-child(1){top:15px}
+.hamburger span:nth-child(2){top:21px}
+.hamburger span:nth-child(3){top:27px}
+.hamburger.is-open span:nth-child(1){top:21px;transform:rotate(45deg)}
+.hamburger.is-open span:nth-child(2){opacity:0}
+.hamburger.is-open span:nth-child(3){top:21px;transform:rotate(-45deg)}
+
+/* === ヒーロー === */
+.hero{
+  position:relative;overflow:hidden;
+  padding:80px 0 100px;
+  background:linear-gradient(180deg,#f5f9ff 0%,#ffffff 100%);
+}
+.blob{
+  position:absolute;border-radius:50%;filter:blur(60px);
+  opacity:.25;pointer-events:none;z-index:0;
+  animation:float 12s ease-in-out infinite;
+}
+.blob-1{width:500px;height:500px;background:var(--c-primary);top:-150px;right:-100px}
+.blob-2{width:400px;height:400px;background:var(--c-primary-light);bottom:-100px;left:-80px;animation-delay:-4s}
+.blob-3{width:300px;height:300px;background:#7cc9ff;top:40%;right:30%;animation-delay:-8s;opacity:.15}
+@keyframes float{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-40px) scale(1.05)}
+  66%{transform:translate(-20px,30px) scale(.95)}
+}
+
+.hero-grid{
+  display:grid;grid-template-columns:1.1fr 1fr;gap:60px;
+  align-items:center;position:relative;z-index:1;
+}
+.hero-label{
+  display:inline-block;padding:6px 14px;border-radius:999px;
+  background:var(--c-gradient-soft);color:var(--c-primary);
+  font-size:12px;font-weight:700;letter-spacing:.2em;margin-bottom:20px;
+}
+.hero-title{
+  font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.15;
+  font-weight:900;margin-bottom:24px;letter-spacing:-0.02em;
+}
+.hero-title .gradient{
+  background:var(--c-gradient);-webkit-background-clip:text;
+  background-clip:text;color:transparent;
+}
+.hero-desc{
+  font-size:17px;color:var(--c-text-muted);
+  line-height:1.8;margin-bottom:32px;max-width:520px;
+}
+.hero-badges{
+  display:flex;flex-wrap:wrap;gap:12px;margin-bottom:32px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:999px;
+  background:#fff;border:1px solid var(--c-border-strong);
+  font-size:13px;font-weight:500;color:var(--c-primary);
+  box-shadow:var(--c-shadow);
+}
+.hero-badge svg{width:14px;height:14px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px}
+
+.hero-visual{position:relative;height:500px}
+.hero-card{
+  position:absolute;background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.9);
+  border-radius:var(--radius-lg);padding:20px;
+  box-shadow:var(--c-shadow-hover);
+  animation:float-card 6s ease-in-out infinite;
+}
+.hero-card-main{
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:75%;padding:32px;text-align:center;
+}
+.hero-card-main .icon-big{
+  width:80px;height:80px;margin:0 auto 16px;
+  background:var(--c-gradient);border-radius:20px;
+  display:grid;place-items:center;color:#fff;
+  box-shadow:var(--c-glow);
+}
+.hero-card-main .icon-big svg{width:42px;height:42px}
+.hero-card-main h3{font-size:20px;margin-bottom:8px}
+.hero-card-main p{color:var(--c-text-muted);font-size:13px}
+.hero-stat-1{top:10%;left:-20px;animation-delay:-2s}
+.hero-stat-2{bottom:10%;right:-20px;animation-delay:-4s}
+.hero-stat-num{
+  font-size:28px;font-weight:900;
+  background:var(--c-gradient);-webkit-background-clip:text;
+  background-clip:text;color:transparent;line-height:1;
+}
+.hero-stat-label{font-size:12px;color:var(--c-text-muted);margin-top:4px}
+@keyframes float-card{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+.hero-card-main{animation:float-card-main 6s ease-in-out infinite}
+@keyframes float-card-main{
+  0%,100%{transform:translate(-50%,-50%)}
+  50%{transform:translate(-50%,-55%)}
+}
+
+.scroll-indicator{
+  position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--c-text-muted);font-size:11px;letter-spacing:.3em;
+  animation:bounce 2s ease-in-out infinite;
+}
+.scroll-indicator__line{
+  width:1px;height:40px;
+  background:linear-gradient(180deg,var(--c-primary) 0%,transparent 100%);
+}
+@keyframes bounce{
+  0%,100%{transform:translate(-50%,0)}
+  50%{transform:translate(-50%,8px)}
+}
+</style>
+</head>
+<body>
+<style>
+/* === セクション共通 === */
+.section{padding:100px 0;position:relative}
+.section-head{text-align:center;margin-bottom:60px}
+.section-head__label{
+  display:inline-block;font-size:12px;font-weight:700;
+  color:var(--c-primary);letter-spacing:.3em;margin-bottom:12px;
+}
+.section-head__title{
+  font-size:clamp(1.75rem,4vw,2.75rem);font-weight:900;
+  line-height:1.3;margin-bottom:16px;
+}
+.section-head__desc{color:var(--c-text-muted);font-size:16px;max-width:640px;margin:0 auto}
+
+/* === 数字で見る実績 === */
+.stats-section{
+  background:var(--c-gradient);color:#fff;padding:80px 0;
+  position:relative;overflow:hidden;
+}
+.stats-section::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 50%,rgba(255,255,255,0.15),transparent 50%),
+             radial-gradient(circle at 80% 20%,rgba(255,255,255,0.1),transparent 50%);
+  pointer-events:none;
+}
+.stats-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:40px;
+  position:relative;z-index:1;
+}
+.stats-item{text-align:center}
+.stats-num{
+  font-size:clamp(3rem,7vw,5rem);font-weight:900;line-height:1;
+  letter-spacing:-0.03em;margin-bottom:8px;
+}
+.stats-num .unit{font-size:0.5em;margin-left:4px;font-weight:700}
+.stats-label{font-size:13px;opacity:.85;letter-spacing:.2em;font-weight:500}
+
+/* === サービス Bento === */
+.services-section{background:var(--c-surface-soft)}
+.bento-grid{
+  display:grid;grid-template-columns:1.3fr 1fr;
+  grid-template-rows:1fr 1fr;gap:20px;
+}
+.bento-item{
+  background:#fff;border:1px solid var(--c-border);
+  border-radius:var(--radius-lg);padding:36px;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.bento-item:hover{
+  transform:translateY(-8px);
+  box-shadow:var(--c-shadow-hover);
+  border-color:var(--c-primary);
+}
+.bento-item--large{grid-row:1/3}
+.bento-item__icon{
+  width:64px;height:64px;border-radius:16px;
+  background:var(--c-gradient);color:#fff;
+  display:grid;place-items:center;margin-bottom:20px;
+  box-shadow:var(--c-shadow);transition:transform .3s ease;
+}
+.bento-item:hover .bento-item__icon{transform:rotate(-5deg)}
+.bento-item__icon svg{width:32px;height:32px}
+.bento-item__title{font-size:22px;margin-bottom:12px}
+.bento-item--large .bento-item__title{font-size:28px}
+.bento-item__desc{color:var(--c-text-muted);font-size:14px;line-height:1.7;margin-bottom:20px}
+.bento-item__link{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--c-primary);font-weight:700;font-size:14px;
+}
+.bento-item__link svg{width:16px;height:16px;transition:transform .3s ease}
+.bento-item:hover .bento-item__link svg{transform:translateX(4px)}
+.bento-item__bg{
+  position:absolute;right:-30px;bottom:-30px;
+  width:200px;height:200px;opacity:.05;color:var(--c-primary);
+  pointer-events:none;
+}
+.bento-item__bg svg{width:100%;height:100%}
+
+/* === 選ばれる理由 === */
+.reasons-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+}
+.reason-item{
+  position:relative;padding:40px 28px;
+  background:#fff;border-radius:var(--radius-lg);
+  border:1px solid var(--c-border);transition:all .3s ease;
+}
+.reason-item:hover{transform:translateY(-6px);box-shadow:var(--c-shadow-hover)}
+.reason-item__num{
+  position:absolute;top:20px;right:20px;
+  font-size:56px;font-weight:900;line-height:1;
+  color:var(--c-primary);opacity:.08;
+}
+.reason-item__icon{
+  width:56px;height:56px;border-radius:14px;
+  background:var(--c-gradient-soft);color:var(--c-primary);
+  display:grid;place-items:center;margin-bottom:20px;
+}
+.reason-item__icon svg{width:28px;height:28px}
+.reason-item__title{font-size:18px;margin-bottom:12px}
+.reason-item__desc{color:var(--c-text-muted);font-size:14px;line-height:1.7}
+
+/* === ギャラリー === */
+.gallery-section{background:var(--c-surface-soft)}
+.gallery-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+}
+.gallery-item{
+  background:#fff;border-radius:var(--radius);overflow:hidden;
+  transition:all .3s ease;cursor:pointer;
+}
+.gallery-item:hover{transform:translateY(-6px);box-shadow:var(--c-shadow-hover)}
+.gallery-item__img{
+  aspect-ratio:4/3;
+  background:var(--c-gradient);
+  display:grid;place-items:center;color:#fff;
+  position:relative;overflow:hidden;
+}
+.gallery-item__img::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.2),transparent 60%);
+}
+.gallery-item__img svg{width:64px;height:64px;opacity:.7;z-index:1}
+.gallery-item__info{padding:20px}
+.gallery-item__cat{
+  display:inline-block;padding:4px 10px;border-radius:999px;
+  background:var(--c-gradient-soft);color:var(--c-primary);
+  font-size:11px;font-weight:700;margin-bottom:8px;letter-spacing:.1em;
+}
+.gallery-item__title{font-size:15px;font-weight:700}
+
+/* === お客様の声 === */
+.voice-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+}
+.voice-card{
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.9);
+  border-radius:var(--radius-lg);padding:32px;
+  box-shadow:var(--c-shadow);transition:all .3s ease;
+}
+.voice-card:hover{transform:translateY(-6px);box-shadow:var(--c-shadow-hover)}
+.voice-stars{color:#ffb400;margin-bottom:16px;font-size:18px;letter-spacing:2px}
+.voice-quote{
+  font-size:15px;line-height:1.8;margin-bottom:20px;
+  color:var(--c-text);
+}
+.voice-meta{display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid var(--c-border)}
+.voice-avatar{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--c-gradient-soft);color:var(--c-primary);
+  display:grid;place-items:center;font-weight:900;
+}
+.voice-name{font-weight:700;font-size:14px}
+.voice-service{
+  font-size:11px;color:var(--c-primary);
+  background:var(--c-gradient-soft);
+  padding:3px 8px;border-radius:999px;margin-top:2px;
+  display:inline-block;
+}
+
+/* === FAQ === */
+.faq-section{background:var(--c-surface-soft)}
+.faq-list{max-width:800px;margin:0 auto;display:grid;gap:12px}
+.faq-item{
+  background:#fff;border:1px solid var(--c-border);
+  border-radius:var(--radius);overflow:hidden;
+  transition:all .2s ease;
+}
+.faq-item[open]{
+  border-color:var(--c-primary);
+  box-shadow:var(--c-shadow);
+}
+.faq-item summary{
+  padding:20px 24px;font-weight:700;font-size:15px;
+  cursor:pointer;display:flex;align-items:center;gap:16px;
+  list-style:none;transition:background .2s ease;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary:hover{background:var(--c-surface-soft)}
+.faq-item .q-mark{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--c-gradient);color:#fff;
+  display:grid;place-items:center;flex-shrink:0;
+  font-weight:900;font-size:14px;
+}
+.faq-item summary::after{
+  content:"+";margin-left:auto;font-size:24px;font-weight:300;
+  color:var(--c-primary);transition:transform .3s ease;
+}
+.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-item__body{
+  padding:0 24px 24px 72px;
+  color:var(--c-text-muted);font-size:14px;line-height:1.8;
+}
+
+/* === CTA === */
+.cta-section{
+  background:var(--c-gradient);color:#fff;padding:80px 0;
+  position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:"";position:absolute;right:-100px;top:50%;transform:translateY(-50%);
+  width:400px;height:400px;opacity:.1;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z'/></svg>") center/contain no-repeat;
+}
+.cta-inner{
+  display:grid;grid-template-columns:1.2fr 1fr;gap:48px;
+  align-items:center;position:relative;z-index:1;
+}
+.cta-title{font-size:clamp(1.75rem,4vw,2.5rem);margin-bottom:16px}
+.cta-desc{opacity:.9;font-size:15px;margin-bottom:24px}
+.cta-actions{display:flex;flex-direction:column;gap:16px}
+.cta-tel{
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:var(--radius);padding:24px;text-align:center;
+}
+.cta-tel__label{font-size:12px;opacity:.8;letter-spacing:.2em}
+.cta-tel__num{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  font-size:clamp(1.75rem,4vw,2.5rem);font-weight:900;margin:8px 0;
+}
+.cta-tel__num svg{width:28px;height:28px}
+.cta-tel__hours{font-size:12px;opacity:.8}
+.cta-form-btn{
+  background:#fff;color:var(--c-primary);
+  padding:18px;border-radius:var(--radius);
+  font-weight:900;font-size:16px;display:flex;
+  align-items:center;justify-content:center;gap:8px;
+  transition:transform .2s ease;
+}
+.cta-form-btn:hover{transform:translateY(-2px)}
+
+/* === フッター === */
+.site-footer{background:#0a1628;color:#fff;padding:60px 0 20px}
+.footer-top{
+  display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:40px;
+  padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.1);
+  margin-bottom:24px;
+}
+.footer-brand__logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:20px;font-weight:900}
+.footer-brand__logo .site-logo__mark{background:var(--c-gradient)}
+.footer-brand__desc{font-size:13px;line-height:1.8;opacity:.7;margin-bottom:16px}
+.footer-sns{display:flex;gap:10px}
+.footer-sns a{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,0.1);
+  display:grid;place-items:center;
+  transition:background .2s ease;
+}
+.footer-sns a:hover{background:var(--c-primary)}
+.footer-sns svg{width:16px;height:16px}
+.footer-col h4{font-size:14px;margin-bottom:16px;color:var(--c-primary-light)}
+.footer-col ul{display:grid;gap:10px}
+.footer-col a{font-size:13px;opacity:.75;transition:opacity .2s ease}
+.footer-col a:hover{opacity:1;color:var(--c-primary-light)}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12px;opacity:.5;padding-top:16px;
+}
+
+/* === モバイル sticky CTA === */
+.mobile-cta{
+  position:fixed;bottom:-100px;left:0;right:0;z-index:90;
+  display:none;grid-template-columns:1fr 1fr;gap:0;
+  background:#fff;border-top:1px solid var(--c-border);
+  box-shadow:0 -4px 20px rgba(0,0,0,0.1);
+  transition:bottom .3s cubic-bezier(.4,0,.2,1);
+}
+.mobile-cta.is-visible{bottom:0}
+.mobile-cta a{
+  padding:16px;text-align:center;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font-size:14px;
+}
+.mobile-cta a:first-child{background:var(--c-gradient);color:#fff}
+.mobile-cta a:last-child{color:var(--c-primary);border-left:1px solid var(--c-border)}
+.mobile-cta svg{width:16px;height:16px}
+
+/* === to-top === */
+.to-top{
+  position:fixed;bottom:24px;right:24px;
+  width:48px;height:48px;border-radius:50%;
+  background:var(--c-gradient);color:#fff;
+  display:grid;place-items:center;
+  box-shadow:var(--c-glow);
+  opacity:0;pointer-events:none;
+  transition:all .3s ease;z-index:80;
+}
+.to-top.is-visible{opacity:1;pointer-events:auto}
+.to-top:hover{transform:translateY(-4px)}
+.to-top svg{width:20px;height:20px;transform:rotate(-90deg)}
+
+/* === reveal === */
+.reveal{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.4,0,.2,1)}
+.reveal.is-visible{opacity:1;transform:translateY(0)}
+
+/* === レスポンシブ === */
+@media(max-width:1024px){
+  .hero-grid{grid-template-columns:1fr;text-align:center}
+  .hero-visual{height:400px;max-width:500px;margin:0 auto}
+  .hero-badges,.hero-ctas{justify-content:center}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:32px}
+  .bento-grid{grid-template-columns:1fr;grid-template-rows:none}
+  .bento-item--large{grid-row:auto}
+  .reasons-grid{grid-template-columns:repeat(2,1fr)}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .voice-grid{grid-template-columns:1fr;max-width:500px;margin:0 auto}
+  .cta-inner{grid-template-columns:1fr;text-align:center}
+  .footer-top{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media(max-width:768px){
+  .section{padding:60px 0}
+  .nav-menu{display:none}
+  .hamburger{display:block}
+  .topbar__item:nth-child(3){display:none}
+  .hero{padding:40px 0 60px}
+  .hero-desc{margin-left:auto;margin-right:auto}
+  .reasons-grid{grid-template-columns:1fr}
+  .gallery-grid{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+  .mobile-cta{display:grid}
+  body{padding-bottom:60px}
+  .to-top{bottom:80px}
+}
+@media(max-width:480px){
+  .hero-title{font-size:2.25rem}
+  .hero-visual{height:340px}
+  .hero-card-main{padding:20px;width:82%}
+  .stats-grid{gap:20px}
+  .stats-num{font-size:2.5rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .blob{animation:none}
+  .hero-card,.hero-card-main{animation:none}
+}
+</style>
+
+<!-- スクロール進捗バー -->
+<div class="scroll-progress" id="scroll-progress"></div>
+
+<!-- ヘッダー -->
+<header class="site-header" id="site-header">
+  <div class="topbar">
+    <div class="topbar__inner">
+      <span class="topbar__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+        0120-246-791
+      </span>
+      <span class="topbar__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        8:00〜18:00（年中無休）
+      </span>
+      <span class="topbar__item">お見積り・ご相談 無料</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="header-inner">
+      <a href="#" class="site-logo">
+        <span class="site-logo__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+        </span>
+        <span class="site-logo__text">
+          大光設備
+          <div class="site-logo__sub">DAIKOUSETUBI</div>
+        </span>
+      </a>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="#services" class="nav-menu__link">サービス</a></li>
+          <li><a href="#reasons" class="nav-menu__link">選ばれる理由</a></li>
+          <li><a href="#gallery" class="nav-menu__link">施工事例</a></li>
+          <li><a href="#voice" class="nav-menu__link">お客様の声</a></li>
+          <li><a href="#faq" class="nav-menu__link">FAQ</a></li>
+          <li><a href="#" class="nav-menu__link">会社概要</a></li>
+          <li><a href="#cta" class="nav-menu__link nav-menu__link--cta">お問い合わせ</a></li>
+        </ul>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="hero-label">SINCE 1995 / 地域密着30年</span>
+        <h1 class="hero-title">水まわりの<br><span class="gradient">困ったを即解決</span><br>地域の安心パートナー</h1>
+        <p class="hero-desc">水道の詰まり・リフォーム・住宅設備まで、暮らしのあらゆる「困った」にワンストップで対応。最短30分でお伺いし、明朗会計で丁寧に施工します。</p>
+        <div class="hero-badges">
+          <span class="hero-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>年中無休対応</span>
+          <span class="hero-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>最短30分</span>
+          <span class="hero-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>お見積り無料</span>
+          <span class="hero-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>追加料金なし</span>
+        </div>
+        <div class="hero-ctas">
+          <a href="tel:0120246791" class="btn btn--primary btn--lg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+            0120-246-791に電話
+          </a>
+          <a href="#cta" class="btn btn--outline btn--lg">
+            メールで相談
+            <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card hero-stat-1">
+          <div class="hero-stat-num">★4.9</div>
+          <div class="hero-stat-label">お客様満足度</div>
+        </div>
+        <div class="hero-card hero-card-main">
+          <div class="icon-big">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+          </div>
+          <h3>水まわりのプロ</h3>
+          <p>給排水設備・リフォーム<br>住宅設備機器まで一貫対応</p>
+        </div>
+        <div class="hero-card hero-stat-2">
+          <div class="hero-stat-num">10,000件</div>
+          <div class="hero-stat-label">累計施工実績</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>SCROLL</span>
+    <div class="scroll-indicator__line"></div>
+  </div>
+</section>
+
+<!-- 数字で見る実績 -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stats-item"><div class="stats-num">30<span class="unit">年</span></div><div class="stats-label">創業</div></div>
+      <div class="stats-item"><div class="stats-num">10,000<span class="unit">件+</span></div><div class="stats-label">累計施工</div></div>
+      <div class="stats-item"><div class="stats-num">98<span class="unit">%</span></div><div class="stats-label">お客様満足度</div></div>
+      <div class="stats-item"><div class="stats-num">24<span class="unit">h</span></div><div class="stats-label">365日対応</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- サービス Bento -->
+<section class="section services-section" id="services">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-head__label">SERVICES</div>
+      <h2 class="section-head__title">暮らしのすべてをトータルサポート</h2>
+      <p class="section-head__desc">水道工事から大規模リフォームまで、専門スタッフがワンストップで対応します。</p>
+    </div>
+    <div class="bento-grid">
+      <article class="bento-item bento-item--large reveal">
+        <div class="bento-item__bg"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+        <div class="bento-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+        </div>
+        <h3 class="bento-item__title">水道の工事・修理</h3>
+        <p class="bento-item__desc">蛇口の水漏れ、トイレの詰まり、給湯器の交換など、水まわりのトラブルを即日対応。24時間365日、緊急対応も承ります。給水装置工事主任技術者在籍。</p>
+        <a href="#" class="bento-item__link">詳しく見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      </article>
+      <article class="bento-item reveal">
+        <div class="bento-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h3 class="bento-item__title">リフォーム</h3>
+        <p class="bento-item__desc">キッチン・お風呂・トイレから全面リフォームまで、暮らしを快適にする住まいづくりをご提案。</p>
+        <a href="#" class="bento-item__link">詳しく見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      </article>
+      <article class="bento-item reveal">
+        <div class="bento-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3 class="bento-item__title">住宅設備・機器</h3>
+        <p class="bento-item__desc">エコキュート・食洗機・ウォシュレットなど、住宅設備の販売・設置・交換をお任せください。</p>
+        <a href="#" class="bento-item__link">詳しく見る <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 選ばれる理由 -->
+<section class="section" id="reasons">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-head__label">REASONS</div>
+      <h2 class="section-head__title">選ばれる4つの理由</h2>
+    </div>
+    <div class="reasons-grid">
+      <article class="reason-item reveal">
+        <div class="reason-item__num">01</div>
+        <div class="reason-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h3 class="reason-item__title">最短30分の即対応</h3>
+        <p class="reason-item__desc">地域密着だからこそ実現できる迅速対応。緊急時もお待たせしません。</p>
+      </article>
+      <article class="reason-item reveal">
+        <div class="reason-item__num">02</div>
+        <div class="reason-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l7 10 7-10M8 13h8M8 17h8M12 13v8"/></svg></div>
+        <h3 class="reason-item__title">明朗会計・追加請求なし</h3>
+        <p class="reason-item__desc">事前お見積りで作業内容と料金を明示。あとから追加費用が発生することはありません。</p>
+      </article>
+      <article class="reason-item reveal">
+        <div class="reason-item__num">03</div>
+        <div class="reason-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3 class="reason-item__title">有資格者による安心施工</h3>
+        <p class="reason-item__desc">給水装置工事主任技術者・排水設備工事責任技術者が確実に施工します。</p>
+      </article>
+      <article class="reason-item reveal">
+        <div class="reason-item__num">04</div>
+        <div class="reason-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <h3 class="reason-item__title">施工後のアフター保証</h3>
+        <p class="reason-item__desc">工事後も安心してお使いいただけるよう、アフターサポートを充実させています。</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 施工事例 -->
+<section class="section gallery-section" id="gallery">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-head__label">WORKS</div>
+      <h2 class="section-head__title">施工事例</h2>
+      <p class="section-head__desc">これまでに手がけた工事の一部をご紹介します。</p>
+    </div>
+    <div class="gallery-grid">
+      <a href="#" class="gallery-item reveal">
+        <div class="gallery-item__img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+        <div class="gallery-item__info"><span class="gallery-item__cat">水道工事</span><h3 class="gallery-item__title">キッチン蛇口交換（築20年戸建）</h3></div>
+      </a>
+      <a href="#" class="gallery-item reveal">
+        <div class="gallery-item__img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div class="gallery-item__info"><span class="gallery-item__cat">リフォーム</span><h3 class="gallery-item__title">ユニットバス入れ替え工事</h3></div>
+      </a>
+      <a href="#" class="gallery-item reveal">
+        <div class="gallery-item__img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+        <div class="gallery-item__info"><span class="gallery-item__cat">住宅設備</span><h3 class="gallery-item__title">エコキュート新規設置</h3></div>
+      </a>
+      <a href="#" class="gallery-item reveal">
+        <div class="gallery-item__img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V7l3-3 3 3v14M9 21V10l3-3 3 3v11M15 21V7l3-3 3 3v14M3 14h18M3 18h18"/></svg></div>
+        <div class="gallery-item__info"><span class="gallery-item__cat">エクステリア</span><h3 class="gallery-item__title">フェンス・門扉リニューアル</h3></div>
+      </a>
+      <a href="#" class="gallery-item reveal">
+        <div class="gallery-item__img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+        <div class="gallery-item__info"><span class="gallery-item__cat">水道工事</span><h3 class="gallery-item__title">トイレ詰まり緊急対応</h3></div>
+      </a>
+      <a href="#" class="gallery-item reveal">
+        <div class="gallery-item__img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div class="gallery-item__info"><span class="gallery-item__cat">リフォーム</span><h3 class="gallery-item__title">対面キッチンへの全面改装</h3></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- お客様の声 -->
+<section class="section" id="voice">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-head__label">VOICE</div>
+      <h2 class="section-head__title">お客様の声</h2>
+      <p class="section-head__desc">実際にご利用いただいたお客様からの声をご紹介します。</p>
+    </div>
+    <div class="voice-grid">
+      <article class="voice-card reveal">
+        <div class="voice-stars">★★★★★</div>
+        <p class="voice-quote">深夜にトイレが詰まって困っていたところ、電話して1時間以内に来てくれました。料金も事前に説明があり安心。本当に助かりました。</p>
+        <div class="voice-meta">
+          <div class="voice-avatar">A</div>
+          <div>
+            <div class="voice-name">○○市 A様</div>
+            <span class="voice-service">水道修理</span>
+          </div>
+        </div>
+      </article>
+      <article class="voice-card reveal">
+        <div class="voice-stars">★★★★★</div>
+        <p class="voice-quote">キッチン全面リフォーム。相談からプラン提案、施工まで一貫してスムーズ。仕上がりも想像以上で家族みんな大満足です。</p>
+        <div class="voice-meta">
+          <div class="voice-avatar">B</div>
+          <div>
+            <div class="voice-name">○○市 B様</div>
+            <span class="voice-service">リフォーム</span>
+          </div>
+        </div>
+      </article>
+      <article class="voice-card reveal">
+        <div class="voice-stars">★★★★★</div>
+        <p class="voice-quote">エコキュートの交換で複数社に見積を取りましたが、こちらが一番明朗で親切でした。工事も手際よく、光熱費も下がりました。</p>
+        <div class="voice-meta">
+          <div class="voice-avatar">C</div>
+          <div>
+            <div class="voice-name">○○市 C様</div>
+            <span class="voice-service">住宅設備</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq-section" id="faq">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-head__label">FAQ</div>
+      <h2 class="section-head__title">よくあるご質問</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item reveal"><summary><span class="q-mark">Q</span>お見積りは無料ですか？</summary><div class="faq-item__body">はい、お見積りは完全無料です。現地調査も無料で承りますので、お気軽にご相談ください。</div></details>
+      <details class="faq-item reveal"><summary><span class="q-mark">Q</span>対応エリアはどこまでですか？</summary><div class="faq-item__body">○○県全域および近隣地域に対応しております。遠方の場合もまずはご相談ください。出張費の有無もその場でご案内いたします。</div></details>
+      <details class="faq-item reveal"><summary><span class="q-mark">Q</span>夜間や休日でも対応してもらえますか？</summary><div class="faq-item__body">年中無休・24時間対応しております。急な水漏れや詰まりなど、緊急のトラブルもお電話一本で駆けつけます。</div></details>
+      <details class="faq-item reveal"><summary><span class="q-mark">Q</span>支払い方法は何がありますか？</summary><div class="faq-item__body">現金・銀行振込・クレジットカード・各種QR決済に対応しています。リフォームなど高額工事はローンもご利用いただけます。</div></details>
+      <details class="faq-item reveal"><summary><span class="q-mark">Q</span>工事期間はどのくらいかかりますか？</summary><div class="faq-item__body">小規模な修理は即日、キッチン・浴室の交換は2〜4日、全面リフォームは2〜4週間が目安です。事前に詳しい工程表をお渡しします。</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="container">
+    <div class="cta-inner">
+      <div>
+        <h2 class="cta-title">まずはお気軽に<br>ご相談ください</h2>
+        <p class="cta-desc">お見積り・現地調査は無料。電話でもメールでもお気軽にどうぞ。</p>
+      </div>
+      <div class="cta-actions">
+        <a href="tel:0120246791" class="cta-tel">
+          <div class="cta-tel__label">FREE DIAL</div>
+          <div class="cta-tel__num">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+            0120-246-791
+          </div>
+          <div class="cta-tel__hours">8:00〜18:00（年中無休）</div>
+        </a>
+        <a href="#" class="cta-form-btn">メールで問い合わせる <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- フッター -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand__logo">
+          <span class="site-logo__mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+          </span>
+          <div>大光設備<div class="site-logo__sub">DAIKOUSETUBI</div></div>
+        </div>
+        <p class="footer-brand__desc">地域のみなさまの「困った」に寄り添い続けて30年。水まわりからリフォームまで、暮らしを支えるパートナーです。</p>
+        <div class="footer-sns">
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2H21.5l-7.5 8.571L22.5 22h-6.828l-5.358-7.007L4.5 22H1.25l8.028-9.171L1.5 2h7l4.83 6.384L18.244 2zM17.073 20h1.822L7.014 3.9H5.055L17.073 20z"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="18" cy="6" r="1" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5c0-1.104.895-2 2-2h2v-4h-2c-3.314 0-6 2.686-6 6v2.01h-2l-.396 3.98h2.396v8.01z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>サービス</h4>
+        <ul>
+          <li><a href="#">水道の工事・修理</a></li>
+          <li><a href="#">リフォーム</a></li>
+          <li><a href="#">住宅設備・機器</a></li>
+          <li><a href="#">エクステリア</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>会社情報</h4>
+        <ul>
+          <li><a href="#">会社概要</a></li>
+          <li><a href="#">施工事例</a></li>
+          <li><a href="#">お知らせ</a></li>
+          <li><a href="#">採用情報</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>お問い合わせ</h4>
+        <ul>
+          <li>0120-246-791</li>
+          <li>8:00〜18:00</li>
+          <li>年中無休</li>
+          <li><a href="#">フォーム送信</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 大光設備株式会社. All rights reserved.</div>
+      <div><a href="#">プライバシーポリシー</a>　|　<a href="#">特定商取引法</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- モバイル sticky CTA -->
+<div class="mobile-cta" id="mobile-cta">
+  <a href="tel:0120246791">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+    電話する
+  </a>
+  <a href="#cta">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    メール相談
+  </a>
+</div>
+
+<!-- トップに戻る -->
+<button class="to-top" id="to-top" aria-label="ページトップへ">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+</button>
+
+<script>
+(function(){
+  // スクロール進捗バー
+  const progress = document.getElementById('scroll-progress');
+  const header = document.getElementById('site-header');
+  const toTop = document.getElementById('to-top');
+  const mobileCta = document.getElementById('mobile-cta');
+
+  function onScroll(){
+    const y = window.scrollY;
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    if(progress) progress.style.width = (h > 0 ? (y/h*100) : 0) + '%';
+    if(header) header.classList.toggle('is-scrolled', y > 10);
+    if(toTop) toTop.classList.toggle('is-visible', y > 400);
+    if(mobileCta) mobileCta.classList.toggle('is-visible', y > 200);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // to-top
+  if(toTop) toTop.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  // ハンバーガー（簡易版：モバイルで押したら全リンク表示）
+  const hamburger = document.getElementById('hamburger');
+  if(hamburger){
+    hamburger.addEventListener('click', ()=>{
+      hamburger.classList.toggle('is-open');
+      const menu = document.querySelector('.nav-menu');
+      if(menu){
+        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        menu.style.flexDirection = 'column';
+        menu.style.position = 'absolute';
+        menu.style.top = '80px';
+        menu.style.left = '0';
+        menu.style.right = '0';
+        menu.style.background = '#fff';
+        menu.style.padding = '20px';
+        menu.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+      }
+    });
+  }
+
+  // reveal アニメーション
+  if('IntersectionObserver' in window){
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.add('is-visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -50px 0px'});
+    document.querySelectorAll('.reveal').forEach((el,i)=>{
+      el.style.transitionDelay = ((i%4)*0.08)+'s';
+      obs.observe(el);
+    });
+  }
+})();
+</script>
+</body>
+</html>
