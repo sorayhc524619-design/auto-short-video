@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="大光設備株式会社 - 水まわりの困った、即解決。地域密着30年の安心。">
-<title>大光設備株式会社 | 水道・リフォーム・住宅設備</title>
+<meta name="description" content="大晃設備株式会社 - 水まわりの困った、即解決。地域密着30年の安心。">
+<title>大晃設備株式会社 | 水道・リフォーム・住宅設備</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
@@ -579,11 +579,31 @@ ul{margin:0;padding:0;list-style:none}
   .mobile-cta{display:grid}
   body{padding-bottom:60px}
   .to-top{bottom:80px}
+  /* スマホ用：ヒーローカードを縦に綺麗に並べる */
+  .hero-visual{
+    height:auto;display:flex;flex-direction:column;
+    align-items:center;gap:14px;margin-top:8px;
+  }
+  .hero-card{
+    position:static;animation:none !important;
+    width:100%;max-width:360px;
+  }
+  .hero-card-main{
+    transform:none;padding:24px;text-align:center;
+  }
+  .hero-card-main .icon-big{width:60px;height:60px;margin-bottom:12px}
+  .hero-card-main .icon-big svg{width:32px;height:32px}
+  .hero-card-main h3{font-size:18px}
+  .hero-card-main p{font-size:12px}
+  .hero-stat-1,.hero-stat-2{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;padding:14px 20px;
+  }
+  .hero-stat-num{font-size:22px}
+  .hero-stat-label{margin-top:0;font-size:13px}
 }
 @media(max-width:480px){
   .hero-title{font-size:2.25rem}
-  .hero-visual{height:340px}
-  .hero-card-main{padding:20px;width:82%}
   .stats-grid{gap:20px}
   .stats-num{font-size:2.5rem}
 }
@@ -619,7 +639,7 @@ ul{margin:0;padding:0;list-style:none}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
         </span>
         <span class="site-logo__text">
-          大光設備
+          大晃設備
           <div class="site-logo__sub">DAIKOUSETUBI</div>
         </span>
       </a>
@@ -910,7 +930,7 @@ ul{margin:0;padding:0;list-style:none}
           <span class="site-logo__mark">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
           </span>
-          <div>大光設備<div class="site-logo__sub">DAIKOUSETUBI</div></div>
+          <div>大晃設備<div class="site-logo__sub">DAIKOUSETUBI</div></div>
         </div>
         <p class="footer-brand__desc">地域のみなさまの「困った」に寄り添い続けて30年。水まわりからリフォームまで、暮らしを支えるパートナーです。</p>
         <div class="footer-sns">
@@ -948,7 +968,7 @@ ul{margin:0;padding:0;list-style:none}
       </div>
     </div>
     <div class="footer-bottom">
-      <div>© 2026 大光設備株式会社. All rights reserved.</div>
+      <div>© 2026 大晃設備株式会社. All rights reserved.</div>
       <div><a href="#">プライバシーポリシー</a>　|　<a href="#">特定商取引法</a></div>
     </div>
   </div>
