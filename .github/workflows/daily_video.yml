@@ -1,88 +1,75 @@
-name: 毎日ショート動画自動生成・投稿
+name: Daily BGM Video Generation
 
 on:
   schedule:
-    # 毎朝 JST 9:00 に実行（UTC 0:00）
-    - cron: '0 0 * * *'
+    # 毎日 UTC 02:00 (JST 11:00) に実行
+    - cron: '0 2 * * *'
   workflow_dispatch:
-    # 手動実行も可能（GitHub Actions画面から）
     inputs:
-      genre:
-        description: 'コンテンツジャンル（空白でデフォルト使用）'
+      duration_sec:
+        description: 'Video length in seconds (e.g. 600=10min, 10800=3h, 28800=8h)'
         required: false
-        default: ''
+        default: '10800'
       dry_run:
-        description: 'ドライラン（投稿せずに動画のみ生成）'
+        description: 'Dry run (skip upload)'
         type: boolean
         required: false
         default: false
 
 jobs:
-  generate-and-post:
+  generate-and-upload:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 330  # 8h動画はffmpegで時間がかかる
 
     steps:
-      # ===== 1. リポジトリのチェックアウト =====
-      - name: リポジトリをチェックアウト
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # ===== 2. Python セットアップ =====
-      - name: Python 3.11 をセットアップ
+      - name: Setup Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
 
-      # ===== 3. システム依存ライブラリのインストール =====
-      - name: FFmpeg と日本語フォントをインストール
+      - name: Install ffmpeg and fonts
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq \
-            ffmpeg \
-            fonts-noto-cjk \
-            fonts-noto-cjk-extra \
-            libsndfile1
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
 
-      # ===== 4. Python ライブラリのインストール =====
-      - name: Python ライブラリをインストール
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # ===== 5. パイプラインの実行 =====
-      - name: ショート動画生成・投稿パイプライン実行
+      - name: Run pipeline
         env:
           CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
-          YOUTUBE_CREDENTIALS_JSON: ${{ secrets.YOUTUBE_CREDENTIALS_JSON }}
-          TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          KLING_API_KEY: ${{ secrets.KLING_API_KEY }}
+          SUNO_API_KEY: ${{ secrets.SUNO_API_KEY }}
+          SUNO_API_BASE_URL: ${{ secrets.SUNO_API_BASE_URL }}
           STABILITY_API_KEY: ${{ secrets.STABILITY_API_KEY }}
-          CONTENT_GENRE: ${{ github.event.inputs.genre || '雑学・豆知識' }}
-          FONT_PATH: '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'
-          LOG_LEVEL: 'INFO'
+          YOUTUBE_CREDENTIALS_JSON: ${{ secrets.YOUTUBE_CREDENTIALS_JSON }}
+          VIDEO_DURATION_SEC: ${{ github.event.inputs.duration_sec || '10800' }}
+          LOG_LEVEL: INFO
+          FONT_PATH: '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
         run: |
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            python main.py --genre "$CONTENT_GENRE" --dry-run
+            python main.py --dry-run
           else
-            python main.py --genre "$CONTENT_GENRE"
+            python main.py
           fi
 
-      # ===== 6. 生成ファイルのアップロード（アーティファクト保存） =====
-      - name: 生成ファイルをアーティファクトとして保存
+      - name: Upload generated artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: video-output-${{ github.run_number }}
+          name: bgm-video-${{ github.run_number }}
           path: |
             output/final_*.mp4
             logs/result_*.json
           retention-days: 7
 
-      # ===== 7. 失敗通知（任意） =====
-      - name: 失敗時の通知
+      - name: Notify failure
         if: failure()
         run: |
-          echo "❌ パイプラインが失敗しました。ログを確認してください。"
+          echo "Pipeline failed. Check logs."
           echo "Run ID: ${{ github.run_id }}"

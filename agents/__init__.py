@@ -1,18 +1,18 @@
 """
 agents パッケージ
-5つのAIエージェントを管理します。
+BGM YouTubeチャンネル自動生成パイプライン（5エージェント構成）
 """
 
-from .agent1_trends import TrendAgent
-from .agent2_script import ScriptAgent
-from .agent3_generate import GenerateAgent
-from .agent4_edit import EditAgent
-from .agent5_post import PostAgent
+from .agent1_theme import ThemeAgent
+from .agent2_music import MusicAgent
+from .agent3_visual import VisualAgent
+from .agent4_compose import ComposeAgent
+from .agent5_upload import UploadAgent
 
 __all__ = [
-    "TrendAgent",
-    "ScriptAgent",
-    "GenerateAgent",
-    "EditAgent",
-    "PostAgent",
+    "ThemeAgent",
+    "MusicAgent",
+    "VisualAgent",
+    "ComposeAgent",
+    "UploadAgent",
 ]

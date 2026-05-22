@@ -1,68 +1,67 @@
 """
 config.py - 設定ファイル
-全APIキーと定数を管理します。
-環境変数から読み込むため、.envファイルまたはGitHub Secretsで設定してください。
+アメリカ向けBGMチャンネル（Cinematic Sleep Music）の自動生成パイプライン設定。
+.env または GitHub Secrets から読み込みます。
 """
 
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# .envファイルの読み込み（ローカル実行時）
 load_dotenv()
 
-# ===== APIキー設定 =====
+# ===== APIキー =====
 CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY", "")
 YOUTUBE_CREDENTIALS_JSON = os.environ.get("YOUTUBE_CREDENTIALS_JSON", "")
-TIKTOK_ACCESS_TOKEN = os.environ.get("TIKTOK_ACCESS_TOKEN", "")
-ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "")
-KLING_API_KEY = os.environ.get("KLING_API_KEY", "")
-STABILITY_API_KEY = os.environ.get("STABILITY_API_KEY", "")
 
-# ===== VOICEVOX設定 =====
-VOICEVOX_URL = os.environ.get("VOICEVOX_URL", "http://localhost:50021")
-VOICEVOX_SPEAKER_ID = int(os.environ.get("VOICEVOX_SPEAKER_ID", "3"))  # ずんだもん
+# Suno API（音楽生成）- サードパーティ経由（sunoapi.org / aimlapi.com 等）
+SUNO_API_KEY = os.environ.get("SUNO_API_KEY", "")
+SUNO_API_BASE_URL = os.environ.get("SUNO_API_BASE_URL", "https://api.sunoapi.org")
+SUNO_MODEL = os.environ.get("SUNO_MODEL", "V5")  # V5 = v5.5系
+SUNO_INSTRUMENTAL = os.environ.get("SUNO_INSTRUMENTAL", "true").lower() == "true"
+
+# Stability AI（ビジュアル画像生成）
+STABILITY_API_KEY = os.environ.get("STABILITY_API_KEY", "")
+STABILITY_API_BASE_URL = "https://api.stability.ai"
 
 # ===== コンテンツ設定 =====
-CONTENT_GENRE = os.environ.get("CONTENT_GENRE", "雑学・豆知識")
-CONTENT_LANGUAGE = os.environ.get("CONTENT_LANGUAGE", "ja")
-VIDEO_DURATION_SEC = int(os.environ.get("VIDEO_DURATION_SEC", "60"))
-MAX_TREND_KEYWORDS = int(os.environ.get("MAX_TREND_KEYWORDS", "5"))
+CHANNEL_NICHE = os.environ.get("CHANNEL_NICHE", "Cinematic Sleep Music")
+CONTENT_LANGUAGE = "en"  # 米国向け（英語固定）
+# 1動画あたりの目標尺（秒）。初回テストは 600（10分）推奨、本番は 28800（8h）
+VIDEO_DURATION_SEC = int(os.environ.get("VIDEO_DURATION_SEC", "10800"))  # default 3h
+# 1テーマあたりに Suno で生成する曲数（連結してループ）
+MUSIC_TRACKS_PER_VIDEO = int(os.environ.get("MUSIC_TRACKS_PER_VIDEO", "5"))
+# クロスフェード（秒）
+MUSIC_CROSSFADE_SEC = int(os.environ.get("MUSIC_CROSSFADE_SEC", "6"))
+# 環境音のミックス音量（0.0 - 1.0）
+AMBIENT_VOLUME = float(os.environ.get("AMBIENT_VOLUME", "0.35"))
+MUSIC_VOLUME = float(os.environ.get("MUSIC_VOLUME", "0.85"))
 
-# ===== Claude API設定 =====
+# ===== Claude API =====
 CLAUDE_MODEL = "claude-sonnet-4-6"
 CLAUDE_MAX_TOKENS = 4096
 
-# ===== 動画設定 =====
-VIDEO_WIDTH = 1080
-VIDEO_HEIGHT = 1920
+# ===== 動画設定（横型16:9） =====
+VIDEO_WIDTH = 1920
+VIDEO_HEIGHT = 1080
 VIDEO_FPS = 30
-VIDEO_BITRATE = "4000k"
+VIDEO_BITRATE = "3500k"
+AUDIO_BITRATE = "192k"
 
-# ===== フォント設定（字幕用） =====
+# ===== タイトルカード（イントロ） =====
+TITLE_CARD_DURATION_SEC = 6
 FONT_PATH = os.environ.get(
     "FONT_PATH",
-    "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"  # Linux
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 )
-FONT_SIZE = 48
-FONT_COLOR = "white"
-FONT_STROKE_COLOR = "black"
-FONT_STROKE_WIDTH = 2
+TITLE_FONT_SIZE = 84
+TITLE_FONT_COLOR = "white"
 
 # ===== YouTube設定 =====
-YOUTUBE_CATEGORY_ID = "22"  # エンタメ
-YOUTUBE_PRIVACY_STATUS = "public"  # public / private / unlisted
+YOUTUBE_CATEGORY_ID = "10"  # Music
+YOUTUBE_PRIVACY_STATUS = os.environ.get("YOUTUBE_PRIVACY_STATUS", "public")
 YOUTUBE_MADE_FOR_KIDS = False
-
-# ===== TikTok設定 =====
-TIKTOK_API_BASE_URL = "https://open.tiktokapis.com/v2"
-
-# ===== ElevenLabs設定 =====
-ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")
-ELEVENLABS_MODEL_ID = "eleven_multilingual_v2"
-
-# ===== Kling AI設定 =====
-KLING_API_BASE_URL = "https://api.klingai.com/v1"
+YOUTUBE_DEFAULT_LANGUAGE = "en"
 
 # ===== パス設定 =====
 BASE_DIR = Path(__file__).parent
@@ -75,42 +74,45 @@ TEMP_DIR.mkdir(exist_ok=True)
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
-BGM_PATH = OUTPUT_DIR / "bgm.mp3"  # BGMファイル（任意）
+# 環境音アセット（ローカル配置）。ファイル名 = キー
+# 例: ambient/rain.mp3, ambient/fireplace.mp3, ambient/forest.mp3, ambient/wind.mp3
+AMBIENT_DIR = BASE_DIR / "ambient"
+AMBIENT_DIR.mkdir(exist_ok=True)
+AMBIENT_FILES = {
+    "rain": AMBIENT_DIR / "rain.mp3",
+    "fireplace": AMBIENT_DIR / "fireplace.mp3",
+    "forest": AMBIENT_DIR / "forest.mp3",
+    "wind": AMBIENT_DIR / "wind.mp3",
+    "ocean": AMBIENT_DIR / "ocean.mp3",
+    "thunder": AMBIENT_DIR / "thunder.mp3",
+    "stream": AMBIENT_DIR / "stream.mp3",
+    "none": None,
+}
 
 # ===== ログ設定 =====
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
 LOG_FILE = LOG_DIR / "pipeline.log"
 
-# ===== RSS フィード =====
-RSS_FEEDS = [
-    "https://www3.nhk.or.jp/rss/news/cat0.xml",       # NHKニュース
-    "https://feeds.feedburner.com/narinari",            # なりなり
-    "https://www.nicovideo.jp/tag/トレンド?rss=2.0",    # ニコニコ動画
-]
 
-# ===== Google Trends設定 =====
-TRENDS_GEO = "JP"  # 日本
-TRENDS_TIMEFRAME = "now 1-d"  # 過去1日
-TRENDS_CATEGORY = 0  # 全カテゴリ
-
-# ===== 必須設定チェック =====
 def validate_config():
-    """必須の環境変数が設定されているか確認します"""
+    """必須環境変数の確認"""
     errors = []
     if not CLAUDE_API_KEY:
         errors.append("CLAUDE_API_KEY が設定されていません")
+    if not SUNO_API_KEY:
+        errors.append("SUNO_API_KEY が設定されていません（音楽生成不可）")
+    if not STABILITY_API_KEY:
+        errors.append("STABILITY_API_KEY が設定されていません（画像はプレースホルダになります）")
     if not YOUTUBE_CREDENTIALS_JSON:
-        errors.append("YOUTUBE_CREDENTIALS_JSON が設定されていません（YouTube投稿をスキップ）")
-    if not TIKTOK_ACCESS_TOKEN:
-        errors.append("TIKTOK_ACCESS_TOKEN が設定されていません（TikTok投稿をスキップ）")
+        errors.append("YOUTUBE_CREDENTIALS_JSON が設定されていません（YouTube投稿スキップ）")
     return errors
 
 
 if __name__ == "__main__":
-    errors = validate_config()
-    if errors:
-        print("⚠️ 設定の警告:")
-        for e in errors:
-            print(f"  - {e}")
+    warnings = validate_config()
+    if warnings:
+        print("Setup warnings:")
+        for w in warnings:
+            print(f"  - {w}")
     else:
-        print("✅ 全ての必須設定が確認されました")
+        print("All required settings OK.")

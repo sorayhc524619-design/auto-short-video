@@ -18,7 +18,7 @@ import urllib.parse
 
 AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
-SCOPE = "https://www.googleapis.com/auth/youtube.upload"
+SCOPE = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube"
 REDIRECT_URI = "http://localhost:8080"
 
 auth_code = None
@@ -105,7 +105,7 @@ def main():
         "client_id": args.client_id,
         "client_secret": args.client_secret,
         "token_uri": "https://oauth2.googleapis.com/token",
-        "scopes": [SCOPE],
+        "scopes": SCOPE.split(),
     }
 
     credentials_json = json.dumps(credentials)
