@@ -12,6 +12,7 @@ main.py - パイプラインオーケストレーター
 import argparse
 import json
 import logging
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -109,9 +110,14 @@ def main():
     parser = argparse.ArgumentParser(description="BGM YouTube 自動生成・投稿パイプライン")
     parser.add_argument("--dry-run", action="store_true", help="アップロードせず生成のみ")
     parser.add_argument("--duration", type=int, help="動画尺（秒）。テスト用に短縮する場合に指定")
+    parser.add_argument("--mock", action="store_true",
+                        help="モックモード: Claude/Suno/Stability を呼ばずffmpeg合成素材で全段テスト")
     args = parser.parse_args()
+    if args.mock:
+        config.MOCK_MODE = True
+        os.environ["MOCK_MODE"] = "true"
     setup_logging()
-    run_pipeline(dry_run=args.dry_run, duration_sec=args.duration)
+    run_pipeline(dry_run=args.dry_run or args.mock, duration_sec=args.duration)
 
 
 if __name__ == "__main__":

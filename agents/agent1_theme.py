@@ -56,13 +56,41 @@ Output ONLY valid JSON, no markdown fences, no commentary:
 """
 
 
+MOCK_THEME = {
+    "theme_name": "rainy_tokyo_apartment",
+    "scene_description": "A small Tokyo apartment on a rainy autumn night, "
+                         "warm lamplight, vinyl crackle, distant city hum.",
+    "english_title": "Rainy Tokyo Apartment - Relaxing Sleep Music (Mock Test)",
+    "description": "Mock pipeline test. Replace with real Claude output by removing --mock.",
+    "tags": ["sleep music", "rain sounds", "tokyo", "relaxing", "lofi", "ambient", "8 hours"],
+    "thumbnail_text": "Rainy Tokyo Night",
+    "music_prompts": [
+        "Lo-fi jazz piano with soft saxophone, 60 BPM, rainy night cafe, instrumental",
+        "Warm electric piano, slow tempo, vinyl crackle, late night, instrumental",
+        "Soft pad synth with rhodes, ambient texture, 55 BPM, dreamy, instrumental",
+        "Acoustic guitar fingerpicking, gentle, hopeful, 65 BPM, instrumental",
+        "Muted trumpet over rhodes, slow swing, intimate, 60 BPM, instrumental",
+    ],
+    "visual_prompt": "Cozy Japanese apartment at night, rain on window, warm yellow lamp light, "
+                     "tatami floor, small desk with cup of tea, soft bokeh, cinematic, 16:9",
+    "ambient_sound": "rain",
+}
+
+
 class ThemeAgent:
     def __init__(self):
+        if config.MOCK_MODE:
+            self.client = None
+            return
         if not config.CLAUDE_API_KEY:
             raise ValueError("CLAUDE_API_KEY が設定されていません")
         self.client = anthropic.Anthropic(api_key=config.CLAUDE_API_KEY)
 
     def generate(self) -> Dict[str, Any]:
+        if config.MOCK_MODE:
+            logger.info("[MOCK] hardcoded theme を使用")
+            return dict(MOCK_THEME)
+
         prompt = THEME_PROMPT.format(
             niche=config.CHANNEL_NICHE,
             duration_min=config.VIDEO_DURATION_SEC // 60,

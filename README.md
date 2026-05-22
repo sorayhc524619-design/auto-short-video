@@ -79,10 +79,23 @@ brew install ffmpeg
 pip install -r requirements.txt
 ```
 
+## ワンコマンドセットアップ
+
+ffmpeg導入後、以下1コマンドで「Python依存インストール → .env雛形 → 環境音7種合成 → モックパイプラインで30秒テスト動画生成」まで完了します:
+
+```bash
+bash setup.sh
+```
+
+API契約していなくても、合成音と合成画像でパイプライン全段が動くので、まず動くか確認できます。
+
 ## 実行
 
 ```bash
-# 10分尺でテスト（投稿はしない）
+# モックモード: APIキー不要、ffmpeg合成だけで30秒テスト動画を作る
+python main.py --mock --duration 30
+
+# 本物APIで10分尺をテスト（投稿はしない、要キー設定）
 python main.py --dry-run --duration 600
 
 # 3時間版でテスト投稿（unlisted 推奨）

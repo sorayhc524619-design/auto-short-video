@@ -101,8 +101,42 @@ class SunoClient:
         return output_path
 
 
+def _generate_mock_track(output: Path, duration_sec: int, seed: int) -> Path:
+    """ffmpegで合成した「音楽もどき」を生成（モックモード用）"""
+    import subprocess
+    # 基音をseedごとに変える: 220-440Hz の音階
+    notes = [220.0, 246.94, 277.18, 311.13, 329.63, 369.99, 415.30, 440.0]
+    f1 = notes[seed % len(notes)]
+    f2 = notes[(seed + 3) % len(notes)]
+    f3 = notes[(seed + 5) % len(notes)]
+    # 3つの正弦波 + 軽くトレモロ
+    src = (
+        f"sine=frequency={f1}:duration={duration_sec},"
+        f"tremolo=f=0.5:d=0.4,"
+        f"volume=0.3"
+    )
+    cmd = [
+        "ffmpeg", "-y",
+        "-f", "lavfi", "-i", src,
+        "-f", "lavfi", "-i", f"sine=frequency={f2}:duration={duration_sec}",
+        "-f", "lavfi", "-i", f"sine=frequency={f3}:duration={duration_sec}",
+        "-filter_complex",
+        "[0:a][1:a]amix=inputs=2:duration=first[m1];"
+        "[m1][2:a]amix=inputs=2:duration=first,volume=0.4[out]",
+        "-map", "[out]",
+        "-c:a", "libmp3lame", "-b:a", "192k",
+        str(output),
+    ]
+    subprocess.run(cmd, check=True, capture_output=True)
+    logger.info(f"[MOCK] 音楽もどき生成: {output.name} ({duration_sec}s)")
+    return output
+
+
 class MusicAgent:
     def __init__(self):
+        if config.MOCK_MODE:
+            self.client = None
+            return
         if not config.SUNO_API_KEY:
             raise ValueError("SUNO_API_KEY が設定されていません")
         self.client = SunoClient()
@@ -119,6 +153,18 @@ class MusicAgent:
             raise ValueError("theme.music_prompts が空です")
 
         track_paths: List[Path] = []
+
+        if config.MOCK_MODE:
+            for i, _ in enumerate(prompts, 1):
+                out = work_dir / f"track_{i:02d}.mp3"
+                _generate_mock_track(out, duration_sec=90, seed=i)
+                track_paths.append(out)
+            result = dict(theme)
+            result["music_tracks"] = [str(p) for p in track_paths]
+            result["music_dir"] = str(work_dir)
+            logger.info(f"Agent 2 完了 [MOCK]: {len(track_paths)}曲")
+            return result
+
         for i, prompt in enumerate(prompts, 1):
             title = f"{theme.get('english_title', theme_name)} - Part {i}"
             try:

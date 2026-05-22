@@ -27,12 +27,15 @@ NUM_IMAGE_VARIANTS = 3  # 同じテーマで微妙に違う絵を生成しルー
 
 class StabilityClient:
     def __init__(self):
-        self.api_key = config.STABILITY_API_KEY
+        self.api_key = "" if config.MOCK_MODE else config.STABILITY_API_KEY
         self.base_url = config.STABILITY_API_BASE_URL.rstrip("/")
 
     def generate_image(self, prompt: str, output_path: Path, seed: int = 0) -> bool:
         if not self.api_key:
-            logger.warning("STABILITY_API_KEY 未設定")
+            if config.MOCK_MODE:
+                logger.info("[MOCK] Stability APIスキップ→プレースホルダ画像へ")
+            else:
+                logger.warning("STABILITY_API_KEY 未設定")
             return False
         try:
             url = f"{self.base_url}/v2beta/stable-image/generate/core"

@@ -17,3 +17,4 @@ ambient/*.wav
 .venv/
 venv/
 .DS_Store
+logs/

@@ -24,6 +24,11 @@ SUNO_INSTRUMENTAL = os.environ.get("SUNO_INSTRUMENTAL", "true").lower() == "true
 STABILITY_API_KEY = os.environ.get("STABILITY_API_KEY", "")
 STABILITY_API_BASE_URL = "https://api.stability.ai"
 
+# ===== モックモード =====
+# True にすると Claude/Suno/Stability API を呼ばず、ffmpegで合成した
+# テスト用素材でパイプラインを通します。--mock CLI フラグで上書き可。
+MOCK_MODE = os.environ.get("MOCK_MODE", "").lower() in ("true", "1", "yes")
+
 # ===== コンテンツ設定 =====
 CHANNEL_NICHE = os.environ.get("CHANNEL_NICHE", "Cinematic Sleep Music")
 CONTENT_LANGUAGE = "en"  # 米国向け（英語固定）
