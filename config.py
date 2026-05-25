@@ -29,6 +29,14 @@ STABILITY_API_BASE_URL = "https://api.stability.ai"
 # テスト用素材でパイプラインを通します。--mock CLI フラグで上書き可。
 MOCK_MODE = os.environ.get("MOCK_MODE", "").lower() in ("true", "1", "yes")
 
+# ===== ローカル素材モード =====
+# LOCAL_MUSIC_DIR : 既にSuno UI等で生成したMP3/WAVを置いたディレクトリ
+#                   → Agent2 はAPI呼ばずこのディレクトリの曲を使う
+# LOCAL_IMAGE_PATH: ファイル or ディレクトリ。1920x1080に自動正規化
+#                   → Agent3 は Stability 呼ばずこの画像を使う
+LOCAL_MUSIC_DIR = os.environ.get("LOCAL_MUSIC_DIR", "")
+LOCAL_IMAGE_PATH = os.environ.get("LOCAL_IMAGE_PATH", "")
+
 # ===== コンテンツ設定 =====
 CHANNEL_NICHE = os.environ.get("CHANNEL_NICHE", "Cinematic Sleep Music")
 CONTENT_LANGUAGE = "en"  # 米国向け（英語固定）

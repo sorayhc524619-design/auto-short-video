@@ -112,10 +112,20 @@ def main():
     parser.add_argument("--duration", type=int, help="動画尺（秒）。テスト用に短縮する場合に指定")
     parser.add_argument("--mock", action="store_true",
                         help="モックモード: Claude/Suno/Stability を呼ばずffmpeg合成素材で全段テスト")
+    parser.add_argument("--local-music", type=str, default="",
+                        help="MP3/WAVを置いたローカルディレクトリ。指定するとSuno APIを呼ばない")
+    parser.add_argument("--local-image", type=str, default="",
+                        help="ローカル画像ファイル or ディレクトリ。指定するとStability APIを呼ばない")
     args = parser.parse_args()
     if args.mock:
         config.MOCK_MODE = True
         os.environ["MOCK_MODE"] = "true"
+    if args.local_music:
+        config.LOCAL_MUSIC_DIR = args.local_music
+        os.environ["LOCAL_MUSIC_DIR"] = args.local_music
+    if args.local_image:
+        config.LOCAL_IMAGE_PATH = args.local_image
+        os.environ["LOCAL_IMAGE_PATH"] = args.local_image
     setup_logging()
     run_pipeline(dry_run=args.dry_run or args.mock, duration_sec=args.duration)
 

@@ -140,13 +140,38 @@ class VisualAgent:
         image_paths: List[Path] = []
         clip_paths: List[Path] = []
 
-        for i in range(NUM_IMAGE_VARIANTS):
-            img_path = work_dir / f"image_{i+1}.png"
-            ok = self.stability.generate_image(visual_prompt, img_path, seed=1000 + i * 137)
-            if not ok:
-                generate_placeholder_image(data.get("thumbnail_text", visual_prompt), img_path)
-            if img_path.exists():
-                image_paths.append(img_path)
+        # ===== LOCAL_IMAGE_PATH: 手動で用意した画像を使う =====
+        if config.LOCAL_IMAGE_PATH:
+            src = Path(config.LOCAL_IMAGE_PATH).expanduser().resolve()
+            if not src.exists():
+                raise ValueError(f"LOCAL_IMAGE_PATH が存在しません: {src}")
+            # ファイル or ディレクトリ両対応
+            if src.is_dir():
+                sources = sorted(list(src.glob("*.png")) + list(src.glob("*.jpg")) + list(src.glob("*.jpeg")))
+            else:
+                sources = [src]
+            if not sources:
+                raise ValueError(f"{src} に画像が見つかりません")
+            logger.info(f"[LOCAL] {len(sources)} 枚の画像をローカルから読込: {src}")
+            for i, s in enumerate(sources[:NUM_IMAGE_VARIANTS]):
+                dst = work_dir / f"image_{i+1}.png"
+                # ffmpeg で 1920x1080 に正規化（クロップ）
+                import subprocess as _sp
+                _sp.run([
+                    "ffmpeg", "-y", "-i", str(s),
+                    "-vf", f"scale={config.VIDEO_WIDTH}:{config.VIDEO_HEIGHT}:force_original_aspect_ratio=increase,"
+                           f"crop={config.VIDEO_WIDTH}:{config.VIDEO_HEIGHT}",
+                    "-frames:v", "1", str(dst),
+                ], check=True, capture_output=True)
+                image_paths.append(dst)
+        else:
+            for i in range(NUM_IMAGE_VARIANTS):
+                img_path = work_dir / f"image_{i+1}.png"
+                ok = self.stability.generate_image(visual_prompt, img_path, seed=1000 + i * 137)
+                if not ok:
+                    generate_placeholder_image(data.get("thumbnail_text", visual_prompt), img_path)
+                if img_path.exists():
+                    image_paths.append(img_path)
 
         if not image_paths:
             raise RuntimeError("画像が1枚も用意できませんでした")

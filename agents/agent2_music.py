@@ -134,6 +134,9 @@ def _generate_mock_track(output: Path, duration_sec: int, seed: int) -> Path:
 
 class MusicAgent:
     def __init__(self):
+        if config.LOCAL_MUSIC_DIR:
+            self.client = None
+            return
         if config.MOCK_MODE:
             self.client = None
             return
@@ -147,6 +150,20 @@ class MusicAgent:
         theme_name = theme.get("theme_name", "untitled")
         work_dir = config.TEMP_DIR / f"{date}_{theme_name}" / "music"
         work_dir.mkdir(parents=True, exist_ok=True)
+
+        # ===== LOCAL_MUSIC_DIR: 手動でDLしたMP3を使う =====
+        if config.LOCAL_MUSIC_DIR:
+            local_dir = Path(config.LOCAL_MUSIC_DIR).expanduser().resolve()
+            if not local_dir.exists():
+                raise ValueError(f"LOCAL_MUSIC_DIR が存在しません: {local_dir}")
+            files = sorted(local_dir.glob("*.mp3")) + sorted(local_dir.glob("*.wav"))
+            if not files:
+                raise ValueError(f"{local_dir} に MP3/WAV ファイルがありません")
+            logger.info(f"[LOCAL] {len(files)} 曲をローカルから読込: {local_dir}")
+            result = dict(theme)
+            result["music_tracks"] = [str(p) for p in files]
+            result["music_dir"] = str(local_dir)
+            return result
 
         prompts = theme.get("music_prompts", [])
         if not prompts:
