@@ -90,18 +90,25 @@ def make_kenburns_clip(image_path: Path, output_path: Path, duration_sec: int, d
     """1枚の画像から ゆっくりズーム/パン する短尺mp4を作る"""
     w, h, fps = config.VIDEO_WIDTH, config.VIDEO_HEIGHT, config.VIDEO_FPS
     total_frames = duration_sec * fps
-    # zoompanはピクセル数の中間サイズに対する比率で動作。ゆるやかな zoom in
-    if direction == "in":
-        zoom_expr = f"min(zoom+0.00035,1.18)"
-        xy = "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
-    else:  # zoom out
-        zoom_expr = f"if(eq(on,0),1.18,max(zoom-0.00035,1.0))"
-        xy = "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+    # SKIP_ZOOM: 静止画として固定（ズーム/パンなし）
+    if config.SKIP_ZOOM:
+        vf = (
+            f"scale={w}:{h}:force_original_aspect_ratio=increase,"
+            f"crop={w}:{h},fps={fps}"
+        )
+    else:
+        # zoompanはピクセル数の中間サイズに対する比率で動作。ゆるやかな zoom in
+        if direction == "in":
+            zoom_expr = f"min(zoom+0.00035,1.18)"
+            xy = "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+        else:  # zoom out
+            zoom_expr = f"if(eq(on,0),1.18,max(zoom-0.00035,1.0))"
+            xy = "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
 
-    vf = (
-        f"scale=8000:-1,"
-        f"zoompan=z='{zoom_expr}':{xy}:d={total_frames}:s={w}x{h}:fps={fps}"
-    )
+        vf = (
+            f"scale=8000:-1,"
+            f"zoompan=z='{zoom_expr}':{xy}:d={total_frames}:s={w}x{h}:fps={fps}"
+        )
     cmd = [
         "ffmpeg", "-y",
         "-loop", "1",
@@ -117,7 +124,8 @@ def make_kenburns_clip(image_path: Path, output_path: Path, duration_sec: int, d
     ]
     try:
         subprocess.run(cmd, check=True, capture_output=True)
-        logger.info(f"Ken Burnsクリップ: {output_path.name} ({duration_sec}s)")
+        label = "静止クリップ" if config.SKIP_ZOOM else "Ken Burnsクリップ"
+        logger.info(f"{label}: {output_path.name} ({duration_sec}s)")
         return True
     except subprocess.CalledProcessError as e:
         logger.error(f"ffmpeg失敗: {e.stderr.decode()[:500]}")

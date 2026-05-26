@@ -42,6 +42,7 @@ LOCAL_IMAGE_PATH = os.environ.get("LOCAL_IMAGE_PATH", "")
 # SKIP_TITLE  : タイトルカード（冒頭のフェードインテキスト）を入れない
 SKIP_AMBIENT = os.environ.get("SKIP_AMBIENT", "").lower() in ("true", "1", "yes")
 SKIP_TITLE = os.environ.get("SKIP_TITLE", "").lower() in ("true", "1", "yes")
+SKIP_ZOOM = os.environ.get("SKIP_ZOOM", "").lower() in ("true", "1", "yes")
 
 # ===== コンテンツ設定 =====
 CHANNEL_NICHE = os.environ.get("CHANNEL_NICHE", "Cinematic Sleep Music")

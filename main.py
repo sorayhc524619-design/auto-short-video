@@ -120,6 +120,8 @@ def main():
                         help="環境音（雨/暖炉等）をミックスしない")
     parser.add_argument("--no-title", action="store_true",
                         help="タイトルカード（冒頭のフェードインテキスト）を入れない")
+    parser.add_argument("--no-zoom", action="store_true",
+                        help="Ken Burnsエフェクト（ズーム/パン）を無効化して画像を静止表示")
     args = parser.parse_args()
     if args.mock:
         config.MOCK_MODE = True
@@ -136,6 +138,9 @@ def main():
     if args.no_title:
         config.SKIP_TITLE = True
         os.environ["SKIP_TITLE"] = "true"
+    if args.no_zoom:
+        config.SKIP_ZOOM = True
+        os.environ["SKIP_ZOOM"] = "true"
     setup_logging()
     run_pipeline(dry_run=args.dry_run or args.mock, duration_sec=args.duration)
 
