@@ -116,6 +116,10 @@ def main():
                         help="MP3/WAVを置いたローカルディレクトリ。指定するとSuno APIを呼ばない")
     parser.add_argument("--local-image", type=str, default="",
                         help="ローカル画像ファイル or ディレクトリ。指定するとStability APIを呼ばない")
+    parser.add_argument("--no-ambient", action="store_true",
+                        help="環境音（雨/暖炉等）をミックスしない")
+    parser.add_argument("--no-title", action="store_true",
+                        help="タイトルカード（冒頭のフェードインテキスト）を入れない")
     args = parser.parse_args()
     if args.mock:
         config.MOCK_MODE = True
@@ -126,6 +130,12 @@ def main():
     if args.local_image:
         config.LOCAL_IMAGE_PATH = args.local_image
         os.environ["LOCAL_IMAGE_PATH"] = args.local_image
+    if args.no_ambient:
+        config.SKIP_AMBIENT = True
+        os.environ["SKIP_AMBIENT"] = "true"
+    if args.no_title:
+        config.SKIP_TITLE = True
+        os.environ["SKIP_TITLE"] = "true"
     setup_logging()
     run_pipeline(dry_run=args.dry_run or args.mock, duration_sec=args.duration)
 

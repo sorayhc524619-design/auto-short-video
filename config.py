@@ -37,6 +37,12 @@ MOCK_MODE = os.environ.get("MOCK_MODE", "").lower() in ("true", "1", "yes")
 LOCAL_MUSIC_DIR = os.environ.get("LOCAL_MUSIC_DIR", "")
 LOCAL_IMAGE_PATH = os.environ.get("LOCAL_IMAGE_PATH", "")
 
+# ===== 装飾オフフラグ =====
+# SKIP_AMBIENT: 環境音（雨/暖炉等）をミックスしない
+# SKIP_TITLE  : タイトルカード（冒頭のフェードインテキスト）を入れない
+SKIP_AMBIENT = os.environ.get("SKIP_AMBIENT", "").lower() in ("true", "1", "yes")
+SKIP_TITLE = os.environ.get("SKIP_TITLE", "").lower() in ("true", "1", "yes")
+
 # ===== コンテンツ設定 =====
 CHANNEL_NICHE = os.environ.get("CHANNEL_NICHE", "Cinematic Sleep Music")
 CONTENT_LANGUAGE = "en"  # 米国向け（英語固定）

@@ -232,7 +232,7 @@ class ComposeAgent:
         work_dir.mkdir(parents=True, exist_ok=True)
 
         target_sec = config.VIDEO_DURATION_SEC
-        title_sec = config.TITLE_CARD_DURATION_SEC
+        title_sec = 0 if config.SKIP_TITLE else config.TITLE_CARD_DURATION_SEC
         loop_sec = target_sec - title_sec  # タイトル分を差し引く
 
         tracks = [Path(p) for p in data.get("music_tracks", [])]
@@ -246,37 +246,44 @@ class ComposeAgent:
         looped_music = work_dir / "music_looped.mp3"
         loop_audio_to_duration(crossfaded, looped_music, loop_sec)
 
-        # ===== 2. 環境音ミックス =====
-        ambient_key = data.get("ambient_sound", "none")
-        ambient_path = config.AMBIENT_FILES.get(ambient_key)
+        # ===== 2. 環境音ミックス（SKIP_AMBIENTでバイパス） =====
         final_audio = work_dir / "final_audio.mp3"
-        mix_with_ambient(looped_music, ambient_path, final_audio, loop_sec)
+        if config.SKIP_AMBIENT:
+            logger.info("環境音スキップ（SKIP_AMBIENT=true）")
+            mix_with_ambient(looped_music, None, final_audio, loop_sec)
+        else:
+            ambient_key = data.get("ambient_sound", "none")
+            ambient_path = config.AMBIENT_FILES.get(ambient_key)
+            mix_with_ambient(looped_music, ambient_path, final_audio, loop_sec)
 
         # ===== 3. 映像: ループ =====
         loop_base = Path(data["loop_base_video"])
         looped_video = work_dir / "video_looped.mp4"
         loop_video_to_duration(loop_base, looped_video, loop_sec)
 
-        # ===== 4. タイトルカード =====
-        title_card = work_dir / "title_card.mp4"
-        make_title_card(data.get("thumbnail_text") or data.get("english_title", ""), title_card, title_sec)
+        # ===== 4-6. タイトルカード（SKIP_TITLEで全部バイパス） =====
+        if config.SKIP_TITLE:
+            logger.info("タイトルカードスキップ（SKIP_TITLE=true）")
+            full_video = looped_video
+            padded_audio = final_audio
+        else:
+            title_card = work_dir / "title_card.mp4"
+            make_title_card(data.get("thumbnail_text") or data.get("english_title", ""), title_card, title_sec)
 
-        # ===== 5. 映像連結（タイトル + 本編） =====
-        full_video = work_dir / "video_full.mp4"
-        concat_video_segments([title_card, looped_video], full_video)
+            full_video = work_dir / "video_full.mp4"
+            concat_video_segments([title_card, looped_video], full_video)
 
-        # ===== 6. 音声側にも先頭の無音(タイトル分)をパディング =====
-        padded_audio = work_dir / "audio_padded.mp3"
-        cmd = [
-            "ffmpeg", "-y",
-            "-f", "lavfi", "-t", str(title_sec), "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
-            "-i", str(final_audio),
-            "-filter_complex", "[0:a][1:a]concat=n=2:v=0:a=1[out]",
-            "-map", "[out]",
-            "-c:a", "libmp3lame", "-b:a", config.AUDIO_BITRATE,
-            str(padded_audio),
-        ]
-        run_ffmpeg(cmd, "audio padding for title card")
+            padded_audio = work_dir / "audio_padded.mp3"
+            cmd = [
+                "ffmpeg", "-y",
+                "-f", "lavfi", "-t", str(title_sec), "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
+                "-i", str(final_audio),
+                "-filter_complex", "[0:a][1:a]concat=n=2:v=0:a=1[out]",
+                "-map", "[out]",
+                "-c:a", "libmp3lame", "-b:a", config.AUDIO_BITRATE,
+                str(padded_audio),
+            ]
+            run_ffmpeg(cmd, "audio padding for title card")
 
         # ===== 7. mux =====
         final_path = config.OUTPUT_DIR / f"final_{date}_{theme_name}.mp4"
