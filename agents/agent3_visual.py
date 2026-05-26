@@ -67,12 +67,13 @@ def generate_placeholder_image(prompt_text: str, output_path: Path) -> bool:
     """Stability 不可時のフォールバック: ffmpeg で暗いグラデーション画像を生成"""
     try:
         safe = prompt_text.replace("'", "").replace('"', "")[:60]
+        font = config.FONT_PATH.replace("\\", "/").replace(":", r"\:")
         cmd = [
             "ffmpeg", "-y",
             "-f", "lavfi",
             "-i", f"color=c=0x0a1428:size={config.VIDEO_WIDTH}x{config.VIDEO_HEIGHT}:duration=1",
             "-vf", (
-                f"drawtext=fontfile={config.FONT_PATH}:text='{safe}':"
+                f"drawtext=fontfile={font}:text='{safe}':"
                 f"fontsize=64:fontcolor=white:x=(w-tw)/2:y=(h-th)/2"
             ),
             "-frames:v", "1",

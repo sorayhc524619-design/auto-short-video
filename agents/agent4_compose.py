@@ -137,11 +137,17 @@ def loop_video_to_duration(input_video: Path, output_path: Path, target_sec: int
     return output_path
 
 
+def _ffmpeg_escape_path(p: str) -> str:
+    """ffmpeg drawtext filter 用にパスをエスケープ（Windowsの C: 対策）"""
+    return p.replace("\\", "/").replace(":", r"\:")
+
+
 def make_title_card(title_text: str, output_path: Path, duration_sec: int) -> Path:
     """シンプルなタイトルカード（暗背景＋テキスト）"""
     safe = title_text.replace("'", "").replace(":", "")[:80]
+    font = _ffmpeg_escape_path(config.FONT_PATH)
     vf = (
-        f"drawtext=fontfile={config.FONT_PATH}:text='{safe}':"
+        f"drawtext=fontfile={font}:text='{safe}':"
         f"fontsize={config.TITLE_FONT_SIZE}:fontcolor=white:"
         f"x=(w-tw)/2:y=(h-th)/2:"
         f"alpha='if(lt(t,1),t,if(lt(t,{duration_sec-1}),1,{duration_sec}-t))'"

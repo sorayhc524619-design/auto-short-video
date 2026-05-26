@@ -24,10 +24,11 @@ def generate_thumbnail(image_path: Path, overlay_text: str, output_path: Path) -
         logger.warning("サムネ元画像なし")
         return None
     safe = overlay_text.replace("'", "").replace(":", "")[:60]
+    font = config.FONT_PATH.replace("\\", "/").replace(":", r"\:")
     vf = (
         f"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,"
         f"drawbox=x=0:y=540:w=iw:h=180:color=black@0.55:t=fill,"
-        f"drawtext=fontfile={config.FONT_PATH}:text='{safe}':"
+        f"drawtext=fontfile={font}:text='{safe}':"
         f"fontsize=64:fontcolor=white:x=(w-tw)/2:y=600"
     )
     cmd = [
