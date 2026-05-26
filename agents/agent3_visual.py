@@ -64,22 +64,21 @@ class StabilityClient:
 
 
 def generate_placeholder_image(prompt_text: str, output_path: Path) -> bool:
-    """Stability 不可時のフォールバック: ffmpeg で暗いグラデーション画像を生成"""
+    """Stability 不可時のフォールバック: Pillowで暗背景＋テキスト画像を生成"""
     try:
-        safe = prompt_text.replace("'", "").replace('"', "")[:60]
-        font = config.FONT_PATH.replace("\\", "/").replace(":", r"\:")
-        cmd = [
-            "ffmpeg", "-y",
-            "-f", "lavfi",
-            "-i", f"color=c=0x0a1428:size={config.VIDEO_WIDTH}x{config.VIDEO_HEIGHT}:duration=1",
-            "-vf", (
-                f"drawtext=fontfile={font}:text='{safe}':"
-                f"fontsize=64:fontcolor=white:x=(w-tw)/2:y=(h-th)/2"
-            ),
-            "-frames:v", "1",
-            str(output_path),
-        ]
-        subprocess.run(cmd, check=True, capture_output=True)
+        from PIL import Image, ImageDraw, ImageFont
+        w, h = config.VIDEO_WIDTH, config.VIDEO_HEIGHT
+        img = Image.new("RGB", (w, h), color=(10, 20, 40))
+        draw = ImageDraw.Draw(img)
+        try:
+            font = ImageFont.truetype(config.FONT_PATH, 64)
+        except (OSError, IOError):
+            font = ImageFont.load_default()
+        safe = (prompt_text or "")[:60]
+        bbox = draw.textbbox((0, 0), safe, font=font)
+        tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        draw.text(((w - tw) // 2, (h - th) // 2), safe, fill=(255, 255, 255), font=font)
+        img.save(output_path)
         logger.warning(f"プレースホルダ画像: {output_path}")
         return True
     except Exception as e:

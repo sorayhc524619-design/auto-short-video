@@ -19,28 +19,50 @@ logger = logging.getLogger(__name__)
 
 
 def generate_thumbnail(image_path: Path, overlay_text: str, output_path: Path) -> Optional[Path]:
-    """既存の画像 + テキストオーバーレイで 1280x720 のサムネを作る"""
+    """既存の画像 + テキストオーバーレイで 1280x720 のサムネを作る（Pillow）"""
     if not image_path.exists():
         logger.warning("サムネ元画像なし")
         return None
-    safe = overlay_text.replace("'", "").replace(":", "")[:60]
-    font = config.FONT_PATH.replace("\\", "/").replace(":", r"\:")
-    vf = (
-        f"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,"
-        f"drawbox=x=0:y=540:w=iw:h=180:color=black@0.55:t=fill,"
-        f"drawtext=fontfile={font}:text='{safe}':"
-        f"fontsize=64:fontcolor=white:x=(w-tw)/2:y=600"
-    )
-    cmd = [
-        "ffmpeg", "-y", "-i", str(image_path),
-        "-vf", vf, "-frames:v", "1", str(output_path),
-    ]
     try:
-        subprocess.run(cmd, check=True, capture_output=True)
+        from PIL import Image, ImageDraw, ImageFont
+        # 1) 元画像を 1280x720 にcrop
+        img = Image.open(image_path).convert("RGB")
+        target_w, target_h = 1280, 720
+        # アスペクト揃え（cover）
+        src_ratio = img.width / img.height
+        tgt_ratio = target_w / target_h
+        if src_ratio > tgt_ratio:
+            new_h = target_h
+            new_w = int(target_h * src_ratio)
+        else:
+            new_w = target_w
+            new_h = int(target_w / src_ratio)
+        img = img.resize((new_w, new_h), Image.LANCZOS)
+        left = (new_w - target_w) // 2
+        top = (new_h - target_h) // 2
+        img = img.crop((left, top, left + target_w, top + target_h))
+
+        # 2) 下部に半透明黒帯
+        overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        odraw = ImageDraw.Draw(overlay)
+        odraw.rectangle([(0, 540), (target_w, 720)], fill=(0, 0, 0, 140))
+        img = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+
+        # 3) テキスト
+        draw = ImageDraw.Draw(img)
+        try:
+            font = ImageFont.truetype(config.FONT_PATH, 64)
+        except (OSError, IOError):
+            font = ImageFont.load_default()
+        safe = (overlay_text or "")[:60]
+        bbox = draw.textbbox((0, 0), safe, font=font)
+        tw = bbox[2] - bbox[0]
+        draw.text(((target_w - tw) // 2, 600), safe, fill=(255, 255, 255), font=font)
+        img.save(output_path, "JPEG", quality=92)
         logger.info(f"サムネ生成: {output_path}")
         return output_path
-    except subprocess.CalledProcessError as e:
-        logger.error(f"サムネ生成失敗: {e.stderr.decode()[:300]}")
+    except Exception as e:
+        logger.error(f"サムネ生成失敗: {e}")
         return None
 
 

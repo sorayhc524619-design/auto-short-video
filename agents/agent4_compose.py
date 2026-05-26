@@ -26,7 +26,9 @@ def run_ffmpeg(cmd: List[str], desc: str) -> bool:
         subprocess.run(cmd, check=True, capture_output=True)
         return True
     except subprocess.CalledProcessError as e:
-        logger.error(f"ffmpeg失敗 ({desc}): {e.stderr.decode()[:1000]}")
+        err = e.stderr.decode(errors="replace") if e.stderr else "(no stderr)"
+        logger.error(f"ffmpeg失敗 ({desc}): {err[-2000:]}")
+        print(f"\n=== ffmpeg STDERR ({desc}) ===\n{err[-3000:]}\n=== /STDERR ===\n", flush=True)
         raise
 
 
@@ -142,29 +144,49 @@ def _ffmpeg_escape_path(p: str) -> str:
     return p.replace("\\", "/").replace(":", r"\:")
 
 
+def _make_title_png(title_text: str, output_path: Path) -> Path:
+    """Pillowでタイトル画像（PNG）を作る。Windowsのffmpeg drawtext問題を回避"""
+    from PIL import Image, ImageDraw, ImageFont
+    w, h = config.VIDEO_WIDTH, config.VIDEO_HEIGHT
+    img = Image.new("RGB", (w, h), color=(10, 10, 20))
+    draw = ImageDraw.Draw(img)
+    # フォント読み込み（失敗したらPILデフォルト）
+    try:
+        font = ImageFont.truetype(config.FONT_PATH, config.TITLE_FONT_SIZE)
+    except (OSError, IOError):
+        logger.warning(f"フォント読込失敗: {config.FONT_PATH} → デフォルトフォント")
+        font = ImageFont.load_default()
+    # テキストサイズを測ってセンタリング
+    safe = title_text[:80]
+    bbox = draw.textbbox((0, 0), safe, font=font)
+    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+    x = (w - tw) // 2 - bbox[0]
+    y = (h - th) // 2 - bbox[1]
+    draw.text((x, y), safe, fill=(255, 255, 255), font=font)
+    img.save(output_path)
+    return output_path
+
+
 def make_title_card(title_text: str, output_path: Path, duration_sec: int) -> Path:
-    """シンプルなタイトルカード（暗背景＋テキスト）"""
-    safe = title_text.replace("'", "").replace(":", "")[:80]
-    font = _ffmpeg_escape_path(config.FONT_PATH)
-    vf = (
-        f"drawtext=fontfile={font}:text='{safe}':"
-        f"fontsize={config.TITLE_FONT_SIZE}:fontcolor=white:"
-        f"x=(w-tw)/2:y=(h-th)/2:"
-        f"alpha='if(lt(t,1),t,if(lt(t,{duration_sec-1}),1,{duration_sec}-t))'"
-    )
+    """タイトルカードmp4を作成（Pillowで描画→ffmpegでループ動画化）"""
+    safe = (title_text or "").replace("\n", " ")[:80] or "Sleep Music"
+    png_path = output_path.with_suffix(".png")
+    _make_title_png(safe, png_path)
+
+    # PNG → mp4（フェードイン/アウト付き）
     cmd = [
         "ffmpeg", "-y",
-        "-f", "lavfi",
-        "-i", f"color=c=0x0a0a14:size={config.VIDEO_WIDTH}x{config.VIDEO_HEIGHT}:duration={duration_sec}:r={config.VIDEO_FPS}",
-        "-vf", vf,
+        "-loop", "1", "-i", str(png_path),
+        "-vf", f"fade=in:0:30,fade=out:st={duration_sec-1}:d=1",
+        "-t", str(duration_sec),
         "-c:v", "libx264",
         "-preset", "medium",
         "-crf", "20",
         "-pix_fmt", "yuv420p",
-        "-t", str(duration_sec),
+        "-r", str(config.VIDEO_FPS),
         str(output_path),
     ]
-    run_ffmpeg(cmd, "title card")
+    run_ffmpeg(cmd, "title card (from PNG)")
     return output_path
 
 
