@@ -18,3 +18,8 @@ ambient/*.wav
 venv/
 .DS_Store
 logs/
+
+# Generated daily reports (kept locally only)
+reports/*.pptx
+reports/*.xlsx
+reports/*.json
