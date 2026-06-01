@@ -36,6 +36,9 @@ MOCK_MODE = os.environ.get("MOCK_MODE", "").lower() in ("true", "1", "yes")
 #                   → Agent3 は Stability 呼ばずこの画像を使う
 LOCAL_MUSIC_DIR = os.environ.get("LOCAL_MUSIC_DIR", "")
 LOCAL_IMAGE_PATH = os.environ.get("LOCAL_IMAGE_PATH", "")
+# LOCAL_VIDEO_PATH: 既存のループ動画ファイル（mp4/mov/webm）。指定すると画像処理を完全スキップし、
+# この動画を loop_base としてそのまま使う（target尺まで自動ループ）。
+LOCAL_VIDEO_PATH = os.environ.get("LOCAL_VIDEO_PATH", "")
 
 # ===== 装飾オフフラグ =====
 # SKIP_AMBIENT: 環境音（雨/暖炉等）をミックスしない

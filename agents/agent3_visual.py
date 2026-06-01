@@ -148,6 +148,44 @@ class VisualAgent:
         image_paths: List[Path] = []
         clip_paths: List[Path] = []
 
+        # ===== LOCAL_VIDEO_PATH: 既存のループ動画をそのまま使う（画像処理スキップ） =====
+        if config.LOCAL_VIDEO_PATH:
+            src = Path(config.LOCAL_VIDEO_PATH).expanduser().resolve()
+            if not src.exists():
+                raise ValueError(f"LOCAL_VIDEO_PATH が存在しません: {src}")
+            logger.info(f"[LOCAL VIDEO] ループ動画を読込: {src}")
+            loop_base = work_dir / "loop_base.mp4"
+            # 1920x1080にスケール+クロップ、音声除去、fps揃え
+            import subprocess as _sp
+            cmd = [
+                "ffmpeg", "-y", "-i", str(src),
+                "-vf",
+                f"scale={config.VIDEO_WIDTH}:{config.VIDEO_HEIGHT}:force_original_aspect_ratio=increase,"
+                f"crop={config.VIDEO_WIDTH}:{config.VIDEO_HEIGHT},fps={config.VIDEO_FPS}",
+                "-an",  # 音声除去（音楽は別途）
+                "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+                "-pix_fmt", "yuv420p",
+                str(loop_base),
+            ]
+            _sp.run(cmd, check=True, capture_output=True)
+            # 動画の長さ取得
+            probe = _sp.run(
+                ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                 "-of", "default=noprint_wrappers=1:nokey=1", str(loop_base)],
+                capture_output=True, text=True,
+            )
+            try:
+                dur = float(probe.stdout.strip())
+            except (ValueError, AttributeError):
+                dur = 60.0
+            logger.info(f"ループ基礎動画: {loop_base.name} ({dur:.1f}s)")
+            result = dict(data)
+            result["image_paths"] = []
+            result["loop_base_video"] = str(loop_base)
+            result["loop_base_duration_sec"] = int(dur)
+            result["visual_dir"] = str(work_dir)
+            return result
+
         # ===== LOCAL_IMAGE_PATH: 手動で用意した画像を使う =====
         if config.LOCAL_IMAGE_PATH:
             src = Path(config.LOCAL_IMAGE_PATH).expanduser().resolve()
