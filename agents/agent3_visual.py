@@ -199,6 +199,27 @@ class VisualAgent:
             if not sources:
                 raise ValueError(f"{src} に画像が見つかりません")
             logger.info(f"[LOCAL] {len(sources)} 枚の画像をローカルから読込: {src}")
+
+            # ANIMATE_EFFECTS: 静止画→アニメ動画変換（雨/炎の揺らぎ/ズーム/グレイン）
+            if config.ANIMATE_EFFECTS:
+                effects = [e.strip() for e in config.ANIMATE_EFFECTS.split(",") if e.strip()]
+                logger.info(f"[ANIMATE] エフェクト付与: {effects}")
+                from scripts.animate_image import animate as _animate
+                loop_base = work_dir / "loop_base.mp4"
+                ok = _animate(
+                    sources[0], loop_base,
+                    duration_sec=LOOP_BASE_DURATION_SEC, effects=effects,
+                )
+                if not ok:
+                    raise RuntimeError("アニメ生成に失敗しました")
+                result = dict(data)
+                result["image_paths"] = [str(sources[0])]
+                result["loop_base_video"] = str(loop_base)
+                result["loop_base_duration_sec"] = LOOP_BASE_DURATION_SEC
+                result["visual_dir"] = str(work_dir)
+                logger.info(f"Agent 3 完了 [ANIMATE]: {loop_base}")
+                return result
+
             for i, s in enumerate(sources[:NUM_IMAGE_VARIANTS]):
                 dst = work_dir / f"image_{i+1}.png"
                 # ffmpeg で 1920x1080 に正規化（クロップ）

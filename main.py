@@ -118,6 +118,8 @@ def main():
                         help="ローカル画像ファイル or ディレクトリ。指定するとStability APIを呼ばない")
     parser.add_argument("--local-video", type=str, default="",
                         help="ループ用ローカル動画ファイル(mp4/mov/webm)。指定すると画像処理を完全スキップしこの動画をそのまま使う")
+    parser.add_argument("--animate", type=str, default="",
+                        help="静止画にアニメ効果を付与(rain,flicker,zoom,grain のカンマ区切り)。--local-imageと併用")
     parser.add_argument("--no-ambient", action="store_true",
                         help="環境音（雨/暖炉等）をミックスしない")
     parser.add_argument("--no-title", action="store_true",
@@ -137,6 +139,9 @@ def main():
     if args.local_video:
         config.LOCAL_VIDEO_PATH = args.local_video
         os.environ["LOCAL_VIDEO_PATH"] = args.local_video
+    if args.animate:
+        config.ANIMATE_EFFECTS = args.animate
+        os.environ["ANIMATE_EFFECTS"] = args.animate
     if args.no_ambient:
         config.SKIP_AMBIENT = True
         os.environ["SKIP_AMBIENT"] = "true"

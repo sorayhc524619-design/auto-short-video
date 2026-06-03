@@ -40,6 +40,10 @@ LOCAL_IMAGE_PATH = os.environ.get("LOCAL_IMAGE_PATH", "")
 # この動画を loop_base としてそのまま使う（target尺まで自動ループ）。
 LOCAL_VIDEO_PATH = os.environ.get("LOCAL_VIDEO_PATH", "")
 
+# ANIMATE_EFFECTS: 静止画→アニメーション化のエフェクト指定（カンマ区切り）
+# rain, flicker, zoom, grain から選択。LOCAL_IMAGE_PATH と併用時のみ有効
+ANIMATE_EFFECTS = os.environ.get("ANIMATE_EFFECTS", "")
+
 # ===== 装飾オフフラグ =====
 # SKIP_AMBIENT: 環境音（雨/暖炉等）をミックスしない
 # SKIP_TITLE  : タイトルカード（冒頭のフェードインテキスト）を入れない
