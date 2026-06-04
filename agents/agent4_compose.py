@@ -251,9 +251,17 @@ class ComposeAgent:
         if config.SKIP_AMBIENT:
             logger.info("環境音スキップ（SKIP_AMBIENT=true）")
             mix_with_ambient(looped_music, None, final_audio, loop_sec)
+        elif config.AMBIENT_OVERRIDE_PATH:
+            # 明示的に指定されたファイルを使う（Claudeのテーマ選択を上書き）
+            override = Path(config.AMBIENT_OVERRIDE_PATH).expanduser().resolve()
+            if not override.exists():
+                raise ValueError(f"AMBIENT_OVERRIDE_PATH が存在しません: {override}")
+            logger.info(f"環境音(明示指定): {override}")
+            mix_with_ambient(looped_music, override, final_audio, loop_sec)
         else:
             ambient_key = data.get("ambient_sound", "none")
             ambient_path = config.AMBIENT_FILES.get(ambient_key)
+            logger.info(f"環境音(テーマ選択): key={ambient_key} path={ambient_path}")
             mix_with_ambient(looped_music, ambient_path, final_audio, loop_sec)
 
         # ===== 3. 映像: ループ =====

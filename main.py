@@ -120,6 +120,8 @@ def main():
                         help="ループ用ローカル動画ファイル(mp4/mov/webm)。指定すると画像処理を完全スキップしこの動画をそのまま使う")
     parser.add_argument("--animate", type=str, default="",
                         help="静止画にアニメ効果を付与(rain,flicker,zoom,grain のカンマ区切り)。--local-imageと併用")
+    parser.add_argument("--ambient-file", type=str, default="",
+                        help="MIXする環境音ファイルを明示指定(mp3/wav)。Claudeのテーマ選択を上書き")
     parser.add_argument("--no-ambient", action="store_true",
                         help="環境音（雨/暖炉等）をミックスしない")
     parser.add_argument("--no-title", action="store_true",
@@ -142,6 +144,9 @@ def main():
     if args.animate:
         config.ANIMATE_EFFECTS = args.animate
         os.environ["ANIMATE_EFFECTS"] = args.animate
+    if args.ambient_file:
+        config.AMBIENT_OVERRIDE_PATH = args.ambient_file
+        os.environ["AMBIENT_OVERRIDE_PATH"] = args.ambient_file
     if args.no_ambient:
         config.SKIP_AMBIENT = True
         os.environ["SKIP_AMBIENT"] = "true"

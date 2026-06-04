@@ -44,6 +44,10 @@ LOCAL_VIDEO_PATH = os.environ.get("LOCAL_VIDEO_PATH", "")
 # rain, flicker, zoom, grain から選択。LOCAL_IMAGE_PATH と併用時のみ有効
 ANIMATE_EFFECTS = os.environ.get("ANIMATE_EFFECTS", "")
 
+# AMBIENT_OVERRIDE_PATH: 環境音ファイルを直接指定（Claudeのテーマ選択を上書き）
+# 設定するとAMBIENT_FILESの選択を無視し、このファイルだけをMIXに使う
+AMBIENT_OVERRIDE_PATH = os.environ.get("AMBIENT_OVERRIDE_PATH", "")
+
 # ===== 装飾オフフラグ =====
 # SKIP_AMBIENT: 環境音（雨/暖炉等）をミックスしない
 # SKIP_TITLE  : タイトルカード（冒頭のフェードインテキスト）を入れない
