@@ -122,6 +122,10 @@ def main():
                         help="静止画にアニメ効果を付与(rain,flicker,zoom,grain のカンマ区切り)。--local-imageと併用")
     parser.add_argument("--ambient-file", type=str, default="",
                         help="MIXする環境音ファイルを明示指定(mp3/wav)。Claudeのテーマ選択を上書き")
+    parser.add_argument("--ambient-volume", type=float, default=None,
+                        help="環境音の音量(0.0-1.0)。デフォルト0.35")
+    parser.add_argument("--music-volume", type=float, default=None,
+                        help="音楽の音量(0.0-1.0)。デフォルト0.85")
     parser.add_argument("--no-ambient", action="store_true",
                         help="環境音（雨/暖炉等）をミックスしない")
     parser.add_argument("--no-title", action="store_true",
@@ -147,6 +151,12 @@ def main():
     if args.ambient_file:
         config.AMBIENT_OVERRIDE_PATH = args.ambient_file
         os.environ["AMBIENT_OVERRIDE_PATH"] = args.ambient_file
+    if args.ambient_volume is not None:
+        config.AMBIENT_VOLUME = args.ambient_volume
+        os.environ["AMBIENT_VOLUME"] = str(args.ambient_volume)
+    if args.music_volume is not None:
+        config.MUSIC_VOLUME = args.music_volume
+        os.environ["MUSIC_VOLUME"] = str(args.music_volume)
     if args.no_ambient:
         config.SKIP_AMBIENT = True
         os.environ["SKIP_AMBIENT"] = "true"
