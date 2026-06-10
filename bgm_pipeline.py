@@ -78,9 +78,22 @@ def collect_tracks(input_dir: Path) -> list:
 
 
 def track_title(path: Path) -> str:
-    """ファイル名から表示用のトラック名を作ります（先頭の番号を除去）"""
+    """ファイル名から表示用のトラック名を作ります（先頭の番号と末尾の(1)等を除去）"""
     name = re.sub(r"^\d+[\s._-]*", "", path.stem)
-    return name.replace("_", " ").replace("-", " ").strip().title() or path.stem
+    name = re.sub(r"\s*\(\d+\)\s*$", "", name)
+    return name.replace("_", " ").strip().title() or path.stem
+
+
+def dedupe_titles(titles: list) -> list:
+    """同名トラック（Sunoの別テイク）にII, III...を付けて区別します"""
+    romans = ["", " II", " III", " IV", " V", " VI"]
+    seen = {}
+    result = []
+    for t in titles:
+        seen[t] = seen.get(t, 0) + 1
+        n = seen[t]
+        result.append(f"{t}{romans[n-1]}" if n <= len(romans) else f"{t} ({n})")
+    return result
 
 
 def build_audio_mix(tracks: list, target_hours: float, work_dir: Path):
@@ -102,6 +115,7 @@ def build_audio_mix(tracks: list, target_hours: float, work_dir: Path):
         fade_out_start = max(dur - 3, 0)
         run_ffmpeg([
             "ffmpeg", "-y", "-i", str(track),
+            "-vn",  # SunoのMP3に埋め込まれたカバー画像を無視
             "-af",
             f"afade=t=in:st=0:d=2,afade=t=out:st={fade_out_start:.2f}:d=3,"
             "loudnorm=I=-16:TP=-1.5:LRA=11",
@@ -110,6 +124,9 @@ def build_audio_mix(tracks: list, target_hours: float, work_dir: Path):
         ], f"トラック正規化 ({track.name})")
         normalized.append((out, probe_duration(out), track_title(track)))
         logger.info(f"  ♪ {track.name} ({dur:.0f}秒) を処理しました")
+
+    titles = dedupe_titles([t for _, _, t in normalized])
+    normalized = [(p, d, t) for (p, d, _), t in zip(normalized, titles)]
 
     # シャッフルしながら目標時間までプレイリストを構築
     playlist = []
