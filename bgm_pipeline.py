@@ -194,8 +194,10 @@ def generate_background_image(niche: dict, work_dir: Path) -> Path:
         except Exception as e:
             logger.warning(f"  画像生成APIが失敗したためグラデーションで代替します: {e}")
 
-    # フォールバック: 縦グラデーション + 微細ノイズ
-    from PIL import Image
+    # フォールバック: 縦グラデーション + ボケ光（夜の街明かり風）
+    # 模様のない単色グラデーションだとズームしても動きが見えないため、
+    # 光の粒を散らしてカメラの動きがわかるようにする
+    from PIL import Image, ImageChops, ImageDraw, ImageFilter
     import numpy as np
 
     (r1, g1, b1), (r2, g2, b2) = niche["fallback_colors"]
@@ -203,11 +205,30 @@ def generate_background_image(niche: dict, work_dir: Path) -> Path:
     grad = np.linspace(0, 1, h).reshape(h, 1, 1)
     top = np.array([r1, g1, b1]).reshape(1, 1, 3)
     bottom = np.array([r2, g2, b2]).reshape(1, 1, 3)
-    img = top + (bottom - top) * grad
+    img_arr = top + (bottom - top) * grad
     noise = np.random.default_rng(0).normal(0, 4, (h, w, 3))
-    img = np.clip(img + noise, 0, 255).astype("uint8")
-    Image.fromarray(img).save(image_path)
-    logger.info("  🎨 グラデーション背景を生成しました")
+    img = Image.fromarray(np.clip(img_arr + noise, 0, 255).astype("uint8"))
+
+    rng = random.Random(7)
+    glow_color = (
+        min(int(r2 * 1.9 + 40), 255),
+        min(int(g2 * 1.9 + 40), 255),
+        min(int(b2 * 1.7 + 30), 255),
+    )
+    bokeh = Image.new("RGB", (w, h), (0, 0, 0))
+    draw = ImageDraw.Draw(bokeh)
+    for _ in range(60):
+        x = rng.randint(0, w)
+        y = rng.randint(int(h * 0.25), h)
+        r = rng.randint(8, 70)
+        brightness = rng.uniform(0.25, 1.0)
+        c = tuple(int(v * brightness) for v in glow_color)
+        draw.ellipse([(x - r, y - r), (x + r, y + r)], fill=c)
+    bokeh = bokeh.filter(ImageFilter.GaussianBlur(22))
+    img = ImageChops.screen(img, bokeh)
+
+    img.save(image_path)
+    logger.info("  🎨 ボケ光入りグラデーション背景を生成しました")
     return image_path
 
 
@@ -219,12 +240,14 @@ def build_motion_loop(image_path: Path, work_dir: Path) -> Path:
     loop_path = work_dir / "motion_loop.mp4"
     frames = LOOP_SECONDS * VIDEO_FPS
     # 事前に拡大してからzoompanをかけるとジッターが減る
-    zoom_expr = f"1.075-0.075*cos(2*PI*on/{frames})"
+    # ズーム(1.0〜1.24)と横揺れを同じ周期にすることで継ぎ目のないループになる
+    zoom_expr = f"1.12-0.12*cos(2*PI*on/{frames})"
+    pan_x = f"(iw-iw/zoom)/2*(1+0.7*sin(2*PI*on/{frames}))"
     run_ffmpeg([
         "ffmpeg", "-y", "-loop", "1", "-i", str(image_path),
         "-vf",
         f"scale=3840:2160:force_original_aspect_ratio=increase,crop=3840:2160,"
-        f"zoompan=z='{zoom_expr}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+        f"zoompan=z='{zoom_expr}':x='{pan_x}':y='ih/2-(ih/zoom/2)'"
         f":d={frames}:fps={VIDEO_FPS}:s={VIDEO_WIDTH}x{VIDEO_HEIGHT},format=yuv420p",
         "-frames:v", str(frames),
         "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
