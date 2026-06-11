@@ -33,6 +33,7 @@ from bgm.niches import NICHES, DEFAULT_NICHE
 logger = logging.getLogger(__name__)
 
 INPUT_DIR = config.BASE_DIR / "bgm_input"
+BACKGROUND_DIR = config.BASE_DIR / "bgm_background"
 BGM_OUTPUT_DIR = config.OUTPUT_DIR / "bgm"
 
 VIDEO_WIDTH = 1920
@@ -165,6 +166,54 @@ def build_audio_mix(tracks: list, target_hours: float, work_dir: Path):
 
 
 # ===== Step 2: 背景映像作成 =====
+
+def find_background_video(niche_key: str) -> Path:
+    """
+    bgm_background/ から背景用の動画を探します。
+    ニッチ名と同名のファイル（例: rain_sleep.mp4）があれば優先、
+    なければ最初に見つかった動画を使います。見つからなければNone。
+    """
+    if not BACKGROUND_DIR.exists():
+        return None
+    exts = {".mp4", ".mov", ".webm", ".mkv", ".avi"}
+    videos = sorted(p for p in BACKGROUND_DIR.iterdir() if p.suffix.lower() in exts)
+    if not videos:
+        return None
+    for v in videos:
+        if v.stem.lower() == niche_key:
+            return v
+    return videos[0]
+
+
+def prepare_background_video(video_path: Path, work_dir: Path):
+    """
+    背景動画を1080p/30fpsに揃えてループ用に変換し、
+    サムネイル用に1フレーム切り出します。
+
+    Returns:
+        (ループ動画のPath, サムネイル用画像のPath)
+    """
+    loop_path = work_dir / "motion_loop.mp4"
+    run_ffmpeg([
+        "ffmpeg", "-y", "-i", str(video_path),
+        "-vf",
+        f"scale={VIDEO_WIDTH}:{VIDEO_HEIGHT}:force_original_aspect_ratio=increase,"
+        f"crop={VIDEO_WIDTH}:{VIDEO_HEIGHT},fps={VIDEO_FPS},format=yuv420p",
+        "-an",
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+        str(loop_path),
+    ], f"背景動画の変換 ({video_path.name})")
+
+    image_path = work_dir / "background.png"
+    run_ffmpeg([
+        "ffmpeg", "-y", "-ss", "1", "-i", str(loop_path),
+        "-frames:v", "1", str(image_path),
+    ], "サムネイル用フレーム抽出")
+
+    dur = probe_duration(loop_path)
+    logger.info(f"  🎞️ 背景動画を使用: {video_path.name} ({dur:.0f}秒ループ)")
+    return loop_path, image_path
+
 
 def generate_background_image(niche: dict, work_dir: Path) -> Path:
     """Stability AIで背景画像を生成。APIキーがなければグラデーション画像を作ります"""
@@ -470,8 +519,12 @@ def run_pipeline(niche_key: str, hours: float, dry_run: bool, input_dir: Path):
     mix_path, tracklist = build_audio_mix(tracks, hours, work_dir)
 
     logger.info("\n[2/4] 背景映像作成")
-    image_path = generate_background_image(niche, work_dir)
-    loop_path = build_motion_loop(image_path, work_dir)
+    bg_video = find_background_video(niche_key)
+    if bg_video:
+        loop_path, image_path = prepare_background_video(bg_video, work_dir)
+    else:
+        image_path = generate_background_image(niche, work_dir)
+        loop_path = build_motion_loop(image_path, work_dir)
     video_path = build_final_video(loop_path, mix_path, work_dir / "final.mp4")
 
     logger.info("\n[3/4] メタデータ・サムネイル生成")
