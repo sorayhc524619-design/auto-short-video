@@ -1,0 +1,84 @@
+name: BGM長尺動画 自動生成・投稿
+
+on:
+  workflow_dispatch:
+    # 手動実行（GitHub Actions画面の「Run workflow」ボタンから）
+    inputs:
+      niche:
+        description: 'ニッチ（ジャンル）'
+        type: choice
+        required: true
+        default: 'rain_sleep'
+        options:
+          - rain_sleep
+          - dark_academia
+          - lofi_study
+          - space_ambient
+      hours:
+        description: '動画の長さ（時間）'
+        required: true
+        default: '1'
+      dry_run:
+        description: 'ドライラン（投稿せずに動画のみ生成）'
+        type: boolean
+        required: false
+        default: true
+
+jobs:
+  generate-and-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: FFmpeg をインストール
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+
+      - name: Python ライブラリをインストール
+        run: |
+          python -m pip install --upgrade pip
+          pip install anthropic python-dotenv requests Pillow numpy \
+            google-api-python-client google-auth-oauthlib google-auth-httplib2
+
+      - name: 楽曲ファイルの確認
+        run: |
+          count=$(ls bgm_input/*.mp3 bgm_input/*.wav bgm_input/*.m4a 2>/dev/null | wc -l)
+          echo "bgm_input/ の楽曲数: $count"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::bgm_input/ に楽曲がありません。SunoのMP3をリポジトリに追加してください。"
+            exit 1
+          fi
+
+      - name: BGM動画パイプライン実行
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          YOUTUBE_CREDENTIALS_JSON: ${{ secrets.YOUTUBE_CREDENTIALS_JSON }}
+          STABILITY_API_KEY: ${{ secrets.STABILITY_API_KEY }}
+          LOG_LEVEL: 'INFO'
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            python bgm_pipeline.py --niche "${{ github.event.inputs.niche }}" --hours "${{ github.event.inputs.hours }}" --dry-run
+          else
+            python bgm_pipeline.py --niche "${{ github.event.inputs.niche }}" --hours "${{ github.event.inputs.hours }}"
+          fi
+
+      - name: 生成ファイルをアーティファクトとして保存
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bgm-video-${{ github.run_number }}
+          path: |
+            output/bgm/**/final.mp4
+            output/bgm/**/thumbnail.jpg
+            output/bgm/**/metadata.json
+          retention-days: 7

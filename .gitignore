@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 *.pyo
 output/
+output/bgm/
 logs/
 ambient/*.mp3
 ambient/*.wav
@@ -17,7 +18,6 @@ ambient/*.wav
 .venv/
 venv/
 .DS_Store
-logs/
 
 # Generated daily reports (kept locally only)
 reports/*.pptx
